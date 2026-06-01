@@ -9,6 +9,29 @@ Proof of Concept for an AI-powered recruiter system that ranks candidates beyond
 - Signal Integration: combines profile attributes, skills, role history, seniority, platform activity, response rate, and job-change intent.
 - Ranked Output: produces an explainable ranked shortlist in JSON and CSV.
 
+## HR OS Project Scope
+
+This project is framed as an HR OS project, not a production replacement for an HR department. It demonstrates how one web system can centralize and partially automate repetitive HR workflows.
+
+Covered modules:
+
+- Recruitment & Hiring: create job description, post jobs, source candidates, screen resumes, shortlist candidates, schedule interviews, coordinate interviews, collect feedback, select candidates, generate offer letters, negotiate offers, and hire candidates.
+- Onboarding: collect documents, verify documents, create employee records, assign onboarding tasks, and conduct orientation.
+- Employee Management: maintain employee database, manage employee records, update employee information, and handle transfers/promotions.
+- Attendance & Leave: track attendance, manage leave requests, approve/reject leave, and monitor absenteeism.
+- Payroll & Benefits: process salaries, manage reimbursements, handle tax documents, and manage benefits/insurance.
+- Performance Management: set goals, conduct reviews, gather feedback, and track performance.
+- Employee Relations: resolve conflicts, handle grievances, conduct engagement activities, and support employee wellbeing.
+- Compliance & Policies: maintain HR policies, ensure labor law compliance, manage contracts, and conduct audits.
+- Learning & Development: identify skill gaps, assign training, track certifications, and support career development planning.
+- Analytics & Reporting: hiring metrics, attrition analysis, workforce planning, and HR reports.
+
+Project positioning:
+
+- This is a complete academic/demo project for an AI-powered HR OS concept.
+- It is not marketed as a production HRMS.
+- It shows how AI and workflow automation can reduce repetitive HR workload and support HR decision-making.
+
 ## Architecture
 
 ```text
@@ -149,6 +172,7 @@ npm run build
 
 ## Submission Checklist
 
-- Code: full implementation in this repository.
-- Blueprint: this README documents the method, architecture, and technical choices.
+- Code: full-stack implementation in this repository.
+- Blueprint: this README documents the HR OS scope, AI methodology, architecture, and technical choices.
 - Results: ranked shortlist files are included in `outputs/`.
+- Verification: `npm run build` and `npm run rank` pass.
