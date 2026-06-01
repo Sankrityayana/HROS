@@ -99,6 +99,8 @@ Regenerate them with:
 npm run rank
 ```
 
+The committed output generator uses a fixed timestamp so repeated verification does not create noisy file changes.
+
 ## Run Locally
 
 ```powershell

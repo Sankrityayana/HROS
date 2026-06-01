@@ -173,7 +173,7 @@ export function rankCandidates(jobDescription, candidates, options = {}) {
 
   return {
     job_id: options.jobId || 'JOB-TALENT-AI-001',
-    generated_at: new Date().toISOString(),
+    generated_at: options.generatedAt || new Date().toISOString(),
     methodology: {
       contextual_relevance: 'Expanded token and synonym overlap with job description.',
       skill_signal: 'Coverage of required hiring-intelligence concepts.',

@@ -1,6 +1,6 @@
 {
   "job_id": "JOB-TALENT-AI-001",
-  "generated_at": "2026-06-01T06:33:57.121Z",
+  "generated_at": "2026-06-01T00:00:00.000Z",
   "methodology": {
     "contextual_relevance": "Expanded token and synonym overlap with job description.",
     "skill_signal": "Coverage of required hiring-intelligence concepts.",

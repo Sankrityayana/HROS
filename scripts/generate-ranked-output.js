@@ -14,7 +14,10 @@ const csvOutputPath = path.join(outputDir, 'ranked_shortlist.csv');
 
 const jobDescription = await readFile(jobPath, 'utf8');
 const candidates = JSON.parse(await readFile(candidatesPath, 'utf8'));
-const ranking = rankCandidates(jobDescription, candidates, { limit: 8 });
+const ranking = rankCandidates(jobDescription, candidates, {
+  generatedAt: '2026-06-01T00:00:00.000Z',
+  limit: 8,
+});
 
 await mkdir(outputDir, { recursive: true });
 await writeFile(jsonOutputPath, `${JSON.stringify(ranking, null, 2)}\n`, 'utf8');
