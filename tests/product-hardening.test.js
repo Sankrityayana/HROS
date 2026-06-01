@@ -8,7 +8,11 @@ test('demo users do not store plaintext passwords', () => {
   assert.ok(Array.isArray(data.users));
   for (const user of data.users) {
     assert.equal(user.password, undefined);
-    assert.match(user.passwordHash, /^[a-f0-9]{64}$/);
+    assert.equal(user.passwordHash, undefined);
+    assert.equal(user.passwordCredential.algorithm, 'pbkdf2-sha256');
+    assert.ok(user.passwordCredential.iterations >= 100000);
+    assert.match(user.passwordCredential.salt, /^[a-f0-9]{32}$/);
+    assert.match(user.passwordCredential.hash, /^[a-f0-9]{64}$/);
   }
 });
 

@@ -36,7 +36,7 @@ Project positioning:
 Product-style controls included:
 
 - Demo authentication with Admin, HR, Manager, and Employee roles.
-- Hashed demo credentials, session expiry, login rate limiting, and security headers.
+- Salted PBKDF2 demo credentials, signed bearer sessions, session expiry, login rate limiting, and security headers.
 - Role-based access control for sensitive actions.
 - Employee record creation and update APIs.
 - Recruiting job creation API plus hiring pipeline updates.
@@ -207,7 +207,7 @@ The repository is 100% complete for project/demo product submission. It includes
 Completed product areas:
 
 - Database layer: seeded local JSON datastore with CRUD APIs.
-- Authentication: hashed demo credentials, role access, session expiry, login throttling.
+- Authentication: salted PBKDF2 credentials, signed bearer tokens, role access, session expiry, login throttling.
 - Documents: submission and verification metadata workflow.
 - Email: local auditable outbox for reminders and interview communication.
 - Calendar: generated interview calendar export records.

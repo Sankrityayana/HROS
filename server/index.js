@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
-import { createHash, randomUUID, timingSafeEqual } from 'node:crypto';
+import { createHmac, pbkdf2Sync, randomUUID, timingSafeEqual } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,11 +17,16 @@ const candidatesPath = path.join(challengeDir, 'candidates.json');
 const app = express();
 const port = Number(process.env.PORT || 4173);
 const host = process.env.HOST || (process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1');
-const sessions = new Map();
 const loginAttempts = new Map();
 const SESSION_TTL_MS = 1000 * 60 * 60 * 8;
 const LOGIN_WINDOW_MS = 1000 * 60 * 10;
 const LOGIN_LIMIT = 8;
+const isProduction = process.env.NODE_ENV === 'production';
+const sessionSecret = process.env.SESSION_SECRET || (isProduction ? '' : 'dev-only-session-secret-change-me');
+
+if (isProduction && !sessionSecret) {
+  throw new Error('SESSION_SECRET is required in production.');
+}
 
 app.use(express.json({ limit: '1mb' }));
 app.use((request, response, next) => {
@@ -53,14 +58,46 @@ function publicUser(user) {
   };
 }
 
-function passwordHash(email, password) {
-  return createHash('sha256').update(`${email.toLowerCase()}:${password}`).digest('hex');
+function passwordHash(password, salt, iterations = 120000) {
+  return pbkdf2Sync(password, salt, iterations, 32, 'sha256').toString('hex');
 }
 
 function verifyPassword(user, password) {
-  const expected = Buffer.from(user.passwordHash || '', 'hex');
-  const actual = Buffer.from(passwordHash(user.email, password), 'hex');
+  const credential = user.passwordCredential;
+  if (!credential?.salt || !credential?.hash) {
+    return false;
+  }
+
+  const expected = Buffer.from(credential.hash, 'hex');
+  const actual = Buffer.from(passwordHash(password, credential.salt, credential.iterations), 'hex');
   return expected.length === actual.length && timingSafeEqual(expected, actual);
+}
+
+function base64Url(input) {
+  return Buffer.from(input).toString('base64url');
+}
+
+function signPayload(payload) {
+  const encoded = base64Url(JSON.stringify(payload));
+  const signature = createHmac('sha256', sessionSecret).update(encoded).digest('base64url');
+  return `${encoded}.${signature}`;
+}
+
+function verifySignedToken(token) {
+  const [encoded, signature] = String(token || '').split('.');
+  if (!encoded || !signature) {
+    return null;
+  }
+
+  const expected = createHmac('sha256', sessionSecret).update(encoded).digest('base64url');
+  const expectedBuffer = Buffer.from(expected);
+  const actualBuffer = Buffer.from(signature);
+  if (expectedBuffer.length !== actualBuffer.length || !timingSafeEqual(expectedBuffer, actualBuffer)) {
+    return null;
+  }
+
+  const payload = JSON.parse(Buffer.from(encoded, 'base64url').toString('utf8'));
+  return payload.exp > Date.now() ? payload : null;
 }
 
 function rateLimitLogin(email) {
@@ -131,7 +168,7 @@ function completionManifest(data) {
   const items = [
     ['Full-stack app', true],
     ['AI candidate ranking', true],
-    ['Auth and RBAC', data.users?.every((user) => user.passwordHash && !user.password)],
+    ['Auth and RBAC', data.users?.every((user) => user.passwordCredential?.hash && !user.password && !user.passwordHash)],
     ['Audit logging', (data.auditLogs || []).length > 0],
     ['Employee CRUD', true],
     ['Recruiting jobs and pipeline', (data.jobs || []).length > 0],
@@ -154,12 +191,9 @@ function completionManifest(data) {
 
 function authRequired(request, response, next) {
   const token = request.get('authorization')?.replace(/^Bearer\s+/i, '');
-  const session = token ? sessions.get(token) : null;
+  const session = verifySignedToken(token);
 
-  if (!session || session.expiresAt < Date.now()) {
-    if (token) {
-      sessions.delete(token);
-    }
+  if (!session?.user) {
     response.status(401).json({ error: 'Sign in required.' });
     return;
   }
@@ -281,8 +315,11 @@ app.post('/api/auth/login', async (request, response, next) => {
       return;
     }
 
-    const token = randomUUID();
-    sessions.set(token, { user: publicUser(user), expiresAt: Date.now() + SESSION_TTL_MS });
+    const token = signPayload({
+      sid: randomUUID(),
+      user: publicUser(user),
+      exp: Date.now() + SESSION_TTL_MS,
+    });
     appendAudit(data, user, 'Signed in', 'Session', `${user.name} opened HR OS as ${user.role}.`);
     await writeData(data);
     response.json({ token, user: publicUser(user), expiresInSeconds: SESSION_TTL_MS / 1000 });
@@ -309,9 +346,10 @@ app.get('/api/admin/security', authRequired, requireRole('Admin', 'HR'), async (
   try {
     const data = await readData();
     response.json({
-      activeSessions: sessions.size,
+      activeSessions: 'stateless',
+      sessionMode: 'signed stateless bearer tokens',
       auditEvents: (data.auditLogs || []).length,
-      passwordStorage: 'sha256 demo hash',
+      passwordStorage: 'PBKDF2-SHA256 salted hashes',
       sessionTtlHours: SESSION_TTL_MS / 1000 / 60 / 60,
       protectedRoutes: [
         '/api/hr',

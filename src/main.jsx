@@ -630,7 +630,7 @@ function AuditView({ auditLogs }) {
 
 function AdminView({ session, documents, payrollRuns, integrations, exports, interviews, calendarEvents, outbox, completion, auditLogs }) {
   const readiness = [
-    { title: 'Secure auth', status: 'Hardened', detail: 'Demo passwords are stored as hashes, sessions expire after 8 hours, and login attempts are rate limited.' },
+    { title: 'Secure auth', status: 'Hardened', detail: 'Demo passwords use salted PBKDF2 hashes, sessions use signed bearer tokens, and login attempts are rate limited.' },
     { title: 'Local datastore', status: 'Complete', detail: 'The project ships with a seeded JSON datastore and clean API boundaries for every HR module.' },
     { title: 'File storage', status: 'Complete', detail: 'Document submission and verification are stored as auditable metadata records.' },
     { title: 'Email/calendar', status: 'Complete', detail: 'Interview scheduling creates queued email and calendar export records without external credentials.' },

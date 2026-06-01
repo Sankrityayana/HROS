@@ -34,10 +34,10 @@
     { "id": "JOB-2403", "title": "Security Engineer", "department": "Technology", "location": "Pune", "status": "Interview", "priority": "Critical", "owner": "Neel Verma" }
   ],
   "users": [
-    { "id": "USR-001", "name": "Mira Shah", "email": "admin@northstar.example", "passwordHash": "84bd36dd8ffa9750489b9ec5b240b02b5f8094c12fcd22e5c7b512fb8d349346", "role": "Admin", "team": "Executive HR" },
-    { "id": "USR-002", "name": "Diya Nair", "email": "hr@northstar.example", "passwordHash": "9165554f1276a11ffbd9c8d67c49f32ff5df570104581c4c462b5dd0b89384f8", "role": "HR", "team": "People" },
-    { "id": "USR-003", "name": "Sameer Rao", "email": "manager@northstar.example", "passwordHash": "a53b8868a205b91d3e86c291f46f9ff301a877b2e4fed2a55fa122b2791f2b7c", "role": "Manager", "team": "Operations" },
-    { "id": "USR-004", "name": "Kabir Sethi", "email": "employee@northstar.example", "passwordHash": "602bff32876e20cd872e02c595591ffa7bdf27c7cef7e8a20d1ed877f84c277a", "role": "Employee", "team": "Finance" }
+    { "id": "USR-001", "name": "Mira Shah", "email": "admin@northstar.example", "passwordCredential": { "algorithm": "pbkdf2-sha256", "iterations": 120000, "salt": "8edc0c07ed79998d1bcdc071dfdac802", "hash": "f35554a48d0789b348b7db6abf0180e0db2959d7cdb17f10b2126c19ed26b7b9" }, "role": "Admin", "team": "Executive HR" },
+    { "id": "USR-002", "name": "Diya Nair", "email": "hr@northstar.example", "passwordCredential": { "algorithm": "pbkdf2-sha256", "iterations": 120000, "salt": "6f1e53e01e1867c735a6fc81a4d5863f", "hash": "eba55ad23bcf4b3cbea7cf304ebf26ade99ce9d5bdd7dffd4228eee5ee810660" }, "role": "HR", "team": "People" },
+    { "id": "USR-003", "name": "Sameer Rao", "email": "manager@northstar.example", "passwordCredential": { "algorithm": "pbkdf2-sha256", "iterations": 120000, "salt": "f24d5fa6493227621c0d6bfb0e14c774", "hash": "4db81cdcecb6af83d29dfc0cab193fe47b48d9113db45d3009a9a351e53d11ce" }, "role": "Manager", "team": "Operations" },
+    { "id": "USR-004", "name": "Kabir Sethi", "email": "employee@northstar.example", "passwordCredential": { "algorithm": "pbkdf2-sha256", "iterations": 120000, "salt": "e7080682192cfff34e6595ca46799c45", "hash": "e743ba9e7ddd42ed3b2517735c3bfc832cb2c5ee8d51ea13cbb2cfd43dae715c" }, "role": "Employee", "team": "Finance" }
   ],
   "documents": [
     { "id": "DOC-1001", "employeeId": "NH-1077", "name": "Identity proof", "type": "KYC", "status": "Verified", "uploadedBy": "Rohan Iyer", "uploadedAt": "2026-05-28T06:15:00.000Z", "verifiedBy": "Diya Nair", "verifiedAt": "2026-05-29T09:00:00.000Z" },

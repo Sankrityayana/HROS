@@ -13,3 +13,7 @@ services:
         value: 4173
       - key: OPENAI_MODEL
         value: gpt-4.1-mini
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: OPENAI_API_KEY
+        sync: false
