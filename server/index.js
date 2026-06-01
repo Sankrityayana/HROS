@@ -207,6 +207,17 @@ const server = app.listen(port, '127.0.0.1', () => {
   console.log(`HR OS API running at http://127.0.0.1:${port}`);
 });
 
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`HR OS API could not start because port ${port} is already in use.`);
+    console.error(`Stop the existing process on port ${port}, or set PORT to another value.`);
+    process.exit(1);
+  }
+
+  console.error('HR OS API failed to start.', error);
+  process.exit(1);
+});
+
 server.keepAliveTimeout = 65000;
 globalThis.hrOsServer = server;
 setInterval(() => {}, 60_000);

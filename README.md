@@ -120,6 +120,8 @@ Backend:
 http://127.0.0.1:4173/api/health
 ```
 
+If the page loads but API calls fail with `ECONNREFUSED 127.0.0.1:4173`, the backend process is not running. Stop the terminal with `Ctrl+C` and run `npm run dev` again. The dev script auto-restarts the API process and keeps the frontend fixed to port `5173`; if that port is already in use, stop the old Vite process before restarting.
+
 Talent ranking API:
 
 ```text

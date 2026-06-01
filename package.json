@@ -4,8 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "client": "vite --host 127.0.0.1",
+    "dev": "concurrently --names api,web --prefix \"[{name}]\" --restart-tries 10 --restart-after 1000 \"npm run server\" \"npm run client\"",
+    "client": "vite --host 127.0.0.1 --port 5173 --strictPort",
     "server": "node server/index.js",
     "rank": "node scripts/generate-ranked-output.js",
     "build": "vite build",
