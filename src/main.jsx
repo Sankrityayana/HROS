@@ -1,39 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
-
-const company = {
-  name: 'Northstar Health',
-  legalName: 'Northstar Health Systems Pvt. Ltd.',
-  region: 'India Operations',
-  headquarters: 'Bengaluru',
-  payCycle: 'Monthly',
-  fiscalYear: 'FY 2026',
-  brandMark: 'NH',
-};
-
-const employees = [
-  { id: 'NH-1024', name: 'Aarav Menon', role: 'Clinical Operations Lead', team: 'Operations', site: 'Bengaluru', status: 'Active', type: 'Full-time', manager: 'Mira Shah', salary: '₹28.4L', score: 94 },
-  { id: 'NH-1041', name: 'Diya Nair', role: 'People Partner', team: 'People', site: 'Hyderabad', status: 'Active', type: 'Full-time', manager: 'Sameer Rao', salary: '₹21.2L', score: 91 },
-  { id: 'NH-1058', name: 'Kabir Sethi', role: 'Revenue Analyst', team: 'Finance', site: 'Mumbai', status: 'On Leave', type: 'Full-time', manager: 'Anika Bose', salary: '₹18.6L', score: 88 },
-  { id: 'NH-1063', name: 'Ishita Roy', role: 'Talent Sourcer', team: 'Recruiting', site: 'Remote', status: 'Active', type: 'Contract', manager: 'Diya Nair', salary: '₹11.8L', score: 86 },
-  { id: 'NH-1077', name: 'Rohan Iyer', role: 'Security Engineer', team: 'Technology', site: 'Pune', status: 'Probation', type: 'Full-time', manager: 'Neel Verma', salary: '₹32.0L', score: 90 },
-  { id: 'NH-1080', name: 'Meera Thomas', role: 'Compliance Officer', team: 'Legal', site: 'Bengaluru', status: 'Active', type: 'Full-time', manager: 'Mira Shah', salary: '₹24.7L', score: 96 },
-];
-
-const hiringStages = [
-  { label: 'Applied', count: 42, delta: '+8 this week' },
-  { label: 'Screen', count: 18, delta: '6 pending' },
-  { label: 'Interview', count: 11, delta: '3 today' },
-  { label: 'Offer', count: 5, delta: '2 approvals' },
-  { label: 'Joining', count: 3, delta: 'Jun cohort' },
-];
-
-const initialRequests = [
-  { id: 1, person: 'Kabir Sethi', type: 'Medical leave', days: '3 days', period: 'Jun 3-5', status: 'Pending' },
-  { id: 2, person: 'Priya Kulkarni', type: 'Work from home', days: '2 days', period: 'Jun 6-7', status: 'Pending' },
-  { id: 3, person: 'Rohan Iyer', type: 'Comp off', days: '1 day', period: 'Jun 10', status: 'Approved' },
-];
 
 const navItems = [
   'Command Center',
@@ -57,6 +24,46 @@ const iconPaths = {
   Assets: 'M4 7 12 3l8 4v10l-8 4-8-4V7Zm8 2 4-2-4-2-4 2 4 2Zm-6 .5v6l5 2.5v-6L6 9.5Zm12 0-5 2.5v6l5-2.5v-6Z',
 };
 
+const defaultData = {
+  company: {
+    name: 'HR OS',
+    legalName: 'Company HR Operations',
+    region: 'Global',
+    headquarters: 'HQ',
+    payCycle: 'Monthly',
+    fiscalYear: 'FY 2026',
+    brandMark: 'HR',
+  },
+  employees: [],
+  requests: [],
+  hiringStages: [],
+  insights: [],
+  metrics: {
+    headcount: 0,
+    openRoles: 0,
+    payrollReady: 0,
+    timeAccuracy: 0,
+    offerAcceptance: 0,
+    attritionRisk: 0,
+    policyAttested: 0,
+    policyTotal: 0,
+  },
+};
+
+async function api(path, options) {
+  const response = await fetch(path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body.error || 'API request failed.');
+  }
+
+  return response.json();
+}
+
 function Icon({ name }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className="icon">
@@ -69,9 +76,70 @@ function App() {
   const [active, setActive] = useState('Command Center');
   const [teamFilter, setTeamFilter] = useState('All');
   const [search, setSearch] = useState('');
-  const [requests, setRequests] = useState(initialRequests);
   const [selectedPeriod, setSelectedPeriod] = useState('June 2026');
-  const [pipelineBoost, setPipelineBoost] = useState(0);
+  const [data, setData] = useState(defaultData);
+  const [status, setStatus] = useState('Loading HR data...');
+  const [aiQuestion, setAiQuestion] = useState('What should HR prioritize today?');
+  const [aiAnswer, setAiAnswer] = useState('');
+  const [aiMode, setAiMode] = useState('local');
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const { company, employees, requests, hiringStages, metrics, insights } = data;
+
+  useEffect(() => {
+    loadHrData();
+  }, []);
+
+  async function loadHrData() {
+    try {
+      const hrData = await api('/api/hr');
+      setData(hrData);
+      setStatus('Connected to HR OS API');
+    } catch (error) {
+      setStatus(error.message);
+    }
+  }
+
+  async function approveRequest(id, requestStatus) {
+    const updated = await api(`/api/requests/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: requestStatus }),
+    });
+
+    setData((current) => ({
+      ...current,
+      requests: current.requests.map((request) => (request.id === id ? updated.request : request)),
+      insights: updated.insights,
+    }));
+  }
+
+  async function addCandidate() {
+    const updated = await api('/api/candidates', { method: 'POST' });
+    setData((current) => ({
+      ...current,
+      hiringStages: updated.hiringStages,
+      metrics: updated.metrics,
+      insights: updated.insights,
+    }));
+  }
+
+  async function askAi(event) {
+    event.preventDefault();
+    setAiLoading(true);
+    try {
+      const result = await api('/api/ai/ask', {
+        method: 'POST',
+        body: JSON.stringify({ question: aiQuestion }),
+      });
+      setAiAnswer(result.answer);
+      setAiMode(result.mode);
+    } catch (error) {
+      setAiAnswer(error.message);
+      setAiMode('error');
+    } finally {
+      setAiLoading(false);
+    }
+  }
 
   const teams = ['All', ...new Set(employees.map((employee) => employee.team))];
   const filteredEmployees = useMemo(() => {
@@ -80,11 +148,7 @@ function App() {
       const haystack = `${employee.name} ${employee.role} ${employee.site} ${employee.status}`.toLowerCase();
       return matchesTeam && haystack.includes(search.toLowerCase());
     });
-  }, [search, teamFilter]);
-
-  const approveRequest = (id, status) => {
-    setRequests((items) => items.map((item) => (item.id === id ? { ...item, status } : item)));
-  };
+  }, [employees, search, teamFilter]);
 
   return (
     <main className="app-shell">
@@ -109,9 +173,9 @@ function App() {
           ))}
         </nav>
         <div className="sidebar-footer">
-          <span>Compliance health</span>
-          <strong>98%</strong>
-          <div className="meter"><i style={{ width: '98%' }} /></div>
+          <span>API status</span>
+          <strong>{status.startsWith('Connected') ? 'Live' : 'Check'}</strong>
+          <small>{status}</small>
         </div>
       </aside>
 
@@ -119,22 +183,31 @@ function App() {
         <header className="topbar">
           <div>
             <h1>{active}</h1>
-            <p>{company.legalName} · {company.headquarters} · {company.fiscalYear}</p>
+            <p>{company.legalName} | {company.headquarters} | {company.fiscalYear}</p>
           </div>
           <div className="topbar-actions">
-            <button className="ghost-button">Export</button>
+            <button className="ghost-button" onClick={loadHrData}>Refresh</button>
             <button className="primary-button">Add employee</button>
           </div>
         </header>
 
         {active === 'Command Center' && (
           <CommandCenter
+            company={company}
+            metrics={metrics}
             requests={requests}
+            hiringStages={hiringStages}
+            insights={insights}
             approveRequest={approveRequest}
             selectedPeriod={selectedPeriod}
             setSelectedPeriod={setSelectedPeriod}
-            pipelineBoost={pipelineBoost}
-            setPipelineBoost={setPipelineBoost}
+            addCandidate={addCandidate}
+            aiQuestion={aiQuestion}
+            setAiQuestion={setAiQuestion}
+            aiAnswer={aiAnswer}
+            aiMode={aiMode}
+            aiLoading={aiLoading}
+            askAi={askAi}
           />
         )}
         {active === 'Employees' && (
@@ -147,10 +220,10 @@ function App() {
             filteredEmployees={filteredEmployees}
           />
         )}
-        {active === 'Recruiting' && <RecruitingView pipelineBoost={pipelineBoost} setPipelineBoost={setPipelineBoost} />}
+        {active === 'Recruiting' && <RecruitingView hiringStages={hiringStages} addCandidate={addCandidate} />}
         {active === 'Attendance' && <AttendanceView requests={requests} approveRequest={approveRequest} />}
-        {active === 'Payroll' && <PayrollView selectedPeriod={selectedPeriod} setSelectedPeriod={setSelectedPeriod} />}
-        {active === 'Performance' && <PerformanceView />}
+        {active === 'Payroll' && <PayrollView company={company} selectedPeriod={selectedPeriod} setSelectedPeriod={setSelectedPeriod} />}
+        {active === 'Performance' && <PerformanceView employees={employees} />}
         {active === 'Policies' && <PoliciesView />}
         {active === 'Assets' && <AssetsView />}
       </section>
@@ -158,28 +231,64 @@ function App() {
   );
 }
 
-function CommandCenter({ requests, approveRequest, selectedPeriod, setSelectedPeriod, pipelineBoost, setPipelineBoost }) {
+function CommandCenter(props) {
+  const {
+    company,
+    metrics,
+    requests,
+    hiringStages,
+    insights,
+    approveRequest,
+    selectedPeriod,
+    setSelectedPeriod,
+    addCandidate,
+    aiQuestion,
+    setAiQuestion,
+    aiAnswer,
+    aiMode,
+    aiLoading,
+    askAi,
+  } = props;
+
   return (
     <div className="screen-grid">
       <section className="hero-panel">
         <div>
-          <h2>Workforce operating system for {company.name}</h2>
-          <p>One control plane for employee records, hiring, attendance, payroll readiness, policy compliance, and performance cycles.</p>
+          <h2>Full-stack HR operating system for {company.name}</h2>
+          <p>Employee records, recruiting, attendance, payroll readiness, policy compliance, and AI-assisted HR decisions in one connected workspace.</p>
         </div>
         <div className="hero-metrics" aria-label="Workforce metrics">
-          <Metric label="Headcount" value="486" trend="+18 QoQ" />
-          <Metric label="Open roles" value={String(47 + pipelineBoost)} trend="12 priority" />
-          <Metric label="Payroll ready" value="97%" trend={selectedPeriod} />
+          <Metric label="Headcount" value={String(metrics.headcount)} trend="+18 QoQ" />
+          <Metric label="Open roles" value={String(metrics.openRoles)} trend="12 priority" />
+          <Metric label="Payroll ready" value={`${metrics.payrollReady}%`} trend={selectedPeriod} />
         </div>
       </section>
 
       <section className="wide-panel">
-        <SectionHeader title="Operating Snapshot" action="Today" />
+        <SectionHeader title="AI HR Copilot" action={aiMode === 'openai' ? 'OpenAI' : 'Local mode'} />
+        <form className="ai-console" onSubmit={askAi}>
+          <input value={aiQuestion} onChange={(event) => setAiQuestion(event.target.value)} placeholder="Ask about payroll, hiring, leave, risk, or policy status" />
+          <button className="primary-button" disabled={aiLoading}>{aiLoading ? 'Thinking...' : 'Ask AI'}</button>
+        </form>
+        <div className="ai-answer">
+          {aiAnswer || 'Ask a question to generate an HR recommendation from live company data.'}
+        </div>
+      </section>
+
+      <section className="wide-panel">
+        <SectionHeader title="Operating Snapshot" action="Live API data" />
         <div className="snapshot-grid">
-          <Metric label="Time-in accuracy" value="96.8%" trend="+1.2%" />
-          <Metric label="Offer acceptance" value="72%" trend="+4%" />
-          <Metric label="Attrition risk" value="8.4%" trend="-1.1%" />
-          <Metric label="Policy attestations" value="441/486" trend="45 due" />
+          <Metric label="Time-in accuracy" value={`${metrics.timeAccuracy}%`} trend="+1.2%" />
+          <Metric label="Offer acceptance" value={`${metrics.offerAcceptance}%`} trend="+4%" />
+          <Metric label="Attrition risk" value={`${metrics.attritionRisk}%`} trend="-1.1%" />
+          <Metric label="Policy attestations" value={`${metrics.policyAttested}/${metrics.policyTotal}`} trend="45 due" />
+        </div>
+      </section>
+
+      <section className="panel">
+        <SectionHeader title="AI Insights" action={`${insights.length} signals`} />
+        <div className="insight-list">
+          {insights.map((insight) => <p key={insight}>{insight}</p>)}
         </div>
       </section>
 
@@ -194,8 +303,8 @@ function CommandCenter({ requests, approveRequest, selectedPeriod, setSelectedPe
       </section>
 
       <section className="wide-panel">
-        <SectionHeader title="Hiring Pipeline" action="Move requisitions" />
-        <Pipeline pipelineBoost={pipelineBoost} setPipelineBoost={setPipelineBoost} />
+        <SectionHeader title="Hiring Pipeline" action="Database backed" />
+        <Pipeline hiringStages={hiringStages} addCandidate={addCandidate} />
       </section>
     </div>
   );
@@ -219,12 +328,12 @@ function EmployeesView({ teams, teamFilter, setTeamFilter, search, setSearch, fi
   );
 }
 
-function RecruitingView({ pipelineBoost, setPipelineBoost }) {
+function RecruitingView({ hiringStages, addCandidate }) {
   return (
     <div className="stack">
       <section className="wide-panel">
-        <SectionHeader title="Hiring Pipeline" action={`${47 + pipelineBoost} active candidates`} />
-        <Pipeline pipelineBoost={pipelineBoost} setPipelineBoost={setPipelineBoost} />
+        <SectionHeader title="Hiring Pipeline" action={`${hiringStages.reduce((total, stage) => total + stage.count, 0)} active candidates`} />
+        <Pipeline hiringStages={hiringStages} addCandidate={addCandidate} />
       </section>
       <section className="two-column">
         <div className="panel">
@@ -275,7 +384,7 @@ function AttendanceView({ requests, approveRequest }) {
   );
 }
 
-function PayrollView({ selectedPeriod, setSelectedPeriod }) {
+function PayrollView({ company, selectedPeriod, setSelectedPeriod }) {
   return (
     <div className="screen-grid">
       <section className="wide-panel">
@@ -289,16 +398,16 @@ function PayrollView({ selectedPeriod, setSelectedPeriod }) {
         ))}
       </section>
       <section className="panel">
-        <SectionHeader title="Cost Summary" action="₹12.8Cr" />
-        <Metric label="Fixed pay" value="₹10.9Cr" trend="85%" />
-        <Metric label="Variable pay" value="₹1.2Cr" trend="9%" />
-        <Metric label="Benefits" value="₹0.7Cr" trend="6%" />
+        <SectionHeader title="Cost Summary" action="INR 12.8Cr" />
+        <Metric label="Fixed pay" value="INR 10.9Cr" trend="85%" />
+        <Metric label="Variable pay" value="INR 1.2Cr" trend="9%" />
+        <Metric label="Benefits" value="INR 0.7Cr" trend="6%" />
       </section>
     </div>
   );
 }
 
-function PerformanceView() {
+function PerformanceView({ employees }) {
   return (
     <div className="two-column">
       <section className="panel">
@@ -312,7 +421,7 @@ function PerformanceView() {
         ))}
       </section>
       <section className="panel">
-        <SectionHeader title="High Potential Bench" action="24 people" />
+        <SectionHeader title="High Potential Bench" action={`${employees.filter((employee) => employee.score >= 90).length} people`} />
         <EmployeeTable employees={employees.filter((employee) => employee.score >= 90)} compact />
       </section>
     </div>
@@ -386,7 +495,7 @@ function RequestList({ requests, approveRequest, compact = false }) {
         <article className="request-row" key={request.id}>
           <div>
             <strong>{request.person}</strong>
-            <span>{request.type} · {request.days} · {request.period}</span>
+            <span>{request.type} | {request.days} | {request.period}</span>
           </div>
           {request.status === 'Pending' ? (
             <div className="request-actions">
@@ -402,17 +511,17 @@ function RequestList({ requests, approveRequest, compact = false }) {
   );
 }
 
-function Pipeline({ pipelineBoost, setPipelineBoost }) {
+function Pipeline({ hiringStages, addCandidate }) {
   return (
     <div className="pipeline">
-      {hiringStages.map((stage, index) => (
+      {hiringStages.map((stage) => (
         <article className="pipeline-stage" key={stage.label}>
           <span>{stage.label}</span>
-          <strong>{stage.count + (index === 0 ? pipelineBoost : 0)}</strong>
+          <strong>{stage.count}</strong>
           <small>{stage.delta}</small>
         </article>
       ))}
-      <button className="primary-button" onClick={() => setPipelineBoost((count) => count + 1)}>
+      <button className="primary-button" onClick={addCandidate}>
         Add candidate
       </button>
     </div>

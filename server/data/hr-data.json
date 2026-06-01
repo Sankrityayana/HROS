@@ -1,0 +1,41 @@
+{
+  "company": {
+    "name": "Northstar Health",
+    "legalName": "Northstar Health Systems Pvt. Ltd.",
+    "region": "India Operations",
+    "headquarters": "Bengaluru",
+    "payCycle": "Monthly",
+    "fiscalYear": "FY 2026",
+    "brandMark": "NH"
+  },
+  "employees": [
+    { "id": "NH-1024", "name": "Aarav Menon", "role": "Clinical Operations Lead", "team": "Operations", "site": "Bengaluru", "status": "Active", "type": "Full-time", "manager": "Mira Shah", "salary": "INR 28.4L", "score": 94 },
+    { "id": "NH-1041", "name": "Diya Nair", "role": "People Partner", "team": "People", "site": "Hyderabad", "status": "Active", "type": "Full-time", "manager": "Sameer Rao", "salary": "INR 21.2L", "score": 91 },
+    { "id": "NH-1058", "name": "Kabir Sethi", "role": "Revenue Analyst", "team": "Finance", "site": "Mumbai", "status": "On Leave", "type": "Full-time", "manager": "Anika Bose", "salary": "INR 18.6L", "score": 88 },
+    { "id": "NH-1063", "name": "Ishita Roy", "role": "Talent Sourcer", "team": "Recruiting", "site": "Remote", "status": "Active", "type": "Contract", "manager": "Diya Nair", "salary": "INR 11.8L", "score": 86 },
+    { "id": "NH-1077", "name": "Rohan Iyer", "role": "Security Engineer", "team": "Technology", "site": "Pune", "status": "Probation", "type": "Full-time", "manager": "Neel Verma", "salary": "INR 32.0L", "score": 90 },
+    { "id": "NH-1080", "name": "Meera Thomas", "role": "Compliance Officer", "team": "Legal", "site": "Bengaluru", "status": "Active", "type": "Full-time", "manager": "Mira Shah", "salary": "INR 24.7L", "score": 96 }
+  ],
+  "requests": [
+    { "id": 1, "person": "Kabir Sethi", "type": "Medical leave", "days": "3 days", "period": "Jun 3-5", "status": "Pending" },
+    { "id": 2, "person": "Priya Kulkarni", "type": "Work from home", "days": "2 days", "period": "Jun 6-7", "status": "Pending" },
+    { "id": 3, "person": "Rohan Iyer", "type": "Comp off", "days": "1 day", "period": "Jun 10", "status": "Approved" }
+  ],
+  "hiringStages": [
+    { "label": "Applied", "count": 42, "delta": "+8 this week" },
+    { "label": "Screen", "count": 18, "delta": "6 pending" },
+    { "label": "Interview", "count": 11, "delta": "3 today" },
+    { "label": "Offer", "count": 5, "delta": "2 approvals" },
+    { "label": "Joining", "count": 3, "delta": "Jun cohort" }
+  ],
+  "metrics": {
+    "headcount": 486,
+    "openRoles": 47,
+    "payrollReady": 97,
+    "timeAccuracy": 96.8,
+    "offerAcceptance": 72,
+    "attritionRisk": 8.4,
+    "policyAttested": 441,
+    "policyTotal": 486
+  }
+}
