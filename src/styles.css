@@ -269,6 +269,18 @@ h1 {
     radial-gradient(circle at 95% 20%, rgba(230, 179, 95, 0.34), transparent 36%);
 }
 
+.module-hero {
+  background:
+    linear-gradient(120deg, rgba(62, 88, 74, 0.96), rgba(24, 33, 28, 0.96)),
+    radial-gradient(circle at 95% 20%, rgba(230, 179, 95, 0.3), transparent 36%);
+}
+
+.recruiting-hero {
+  background:
+    linear-gradient(120deg, rgba(15, 107, 87, 0.96), rgba(45, 91, 154, 0.92)),
+    radial-gradient(circle at 95% 20%, rgba(230, 179, 95, 0.34), transparent 36%);
+}
+
 .hero-panel h2 {
   max-width: 740px;
   font-size: clamp(32px, 5vw, 64px);
@@ -785,6 +797,85 @@ td span {
   font-size: 13px;
 }
 
+.workflow-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.workflow-grid.compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.workflow-card {
+  display: grid;
+  gap: 14px;
+  min-height: 168px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.workflow-top {
+  display: grid;
+  gap: 8px;
+}
+
+.workflow-top strong {
+  line-height: 1.25;
+}
+
+.workflow-top span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #e6f2ee;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.workflow-card p {
+  color: var(--muted);
+  line-height: 1.45;
+  font-size: 13px;
+}
+
+.workflow-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.workflow-footer span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.absence-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.absence-grid article {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.absence-grid span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 @media (max-width: 1060px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -817,6 +908,9 @@ td span {
   .payroll-steps,
   .snapshot-grid,
   .policy-grid,
+  .workflow-grid,
+  .workflow-grid.compact,
+  .absence-grid,
   .score-grid,
   .method-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -856,6 +950,9 @@ td span {
   .payroll-steps,
   .snapshot-grid,
   .policy-grid,
+  .workflow-grid,
+  .workflow-grid.compact,
+  .absence-grid,
   .score-grid,
   .method-grid,
   .ai-console {

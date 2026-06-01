@@ -5,26 +5,106 @@ import './styles.css';
 const navItems = [
   'Command Center',
   'Talent AI',
-  'Employees',
   'Recruiting',
+  'Onboarding',
+  'Employees',
   'Attendance',
   'Payroll',
   'Performance',
-  'Policies',
+  'Relations',
+  'Compliance',
+  'Learning',
+  'Analytics',
   'Assets',
 ];
 
 const iconPaths = {
   'Command Center': 'M4 13h6V4H4v9Zm10 7h6V4h-6v16ZM4 20h6v-5H4v5Z',
   'Talent AI': 'M12 3 14.6 8.6 21 9.3 16.2 13.7 17.6 20 12 16.8 6.4 20 7.8 13.7 3 9.3 9.4 8.6 12 3Z',
-  Employees: 'M7 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm10-1a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 20c.3-4 2.7-6 5-6s4.7 2 5 6H2Zm11.5 0c.2-2.5 1.5-4.2 3.5-4.2 2.1 0 3.6 1.7 3.9 4.2h-7.4Z',
   Recruiting: 'M4 5h16v4H4V5Zm0 6h10v4H4v-4Zm0 6h16v2H4v-2Zm13-6 4 2-4 2v-4Z',
+  Onboarding: 'M5 4h10l4 4v12H5V4Zm9 1v4h4M8 12h8v2H8v-2Zm0 4h6v2H8v-2Z',
+  Employees: 'M7 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm10-1a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 20c.3-4 2.7-6 5-6s4.7 2 5 6H2Zm11.5 0c.2-2.5 1.5-4.2 3.5-4.2 2.1 0 3.6 1.7 3.9 4.2h-7.4Z',
   Attendance: 'M5 3h14v18H5V3Zm3 4h8v2H8V7Zm0 4h8v2H8v-2Zm0 4h5v2H8v-2Z',
   Payroll: 'M4 6h16v12H4V6Zm2 3a2 2 0 0 0 2-1h8a2 2 0 0 0 2 1v6a2 2 0 0 0-2 1H8a2 2 0 0 0-2-1V9Zm6 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z',
   Performance: 'M4 18 9 9l4 4 7-9v14H4Z',
-  Policies: 'M6 3h9l3 3v15H6V3Zm8 1v4h4M9 11h6v2H9v-2Zm0 4h6v2H9v-2Z',
+  Relations: 'M4 6h16v9H8l-4 4V6Zm5 3h6v2H9V9Zm0 4h8v2H9v-2Z',
+  Compliance: 'M6 3h9l3 3v15H6V3Zm8 1v4h4M9 11h6v2H9v-2Zm0 4h6v2H9v-2Z',
+  Learning: 'M4 5 12 2l8 3v10l-8 3-8-3V5Zm4 13h8v3H8v-3Z',
+  Analytics: 'M4 19V5h2v14H4Zm5 0v-8h2v8H9Zm5 0V8h2v11h-2Zm5 0V3h2v16h-2Z',
   Assets: 'M4 7 12 3l8 4v10l-8 4-8-4V7Zm8 2 4-2-4-2-4 2 4 2Zm-6 .5v6l5 2.5v-6L6 9.5Zm12 0-5 2.5v6l5-2.5v-6Z',
 };
+
+const hiringWorkflow = [
+  { title: 'Create job description', owner: 'Talent Partner', status: 'Ready', detail: 'AI-assisted JD generated from role intake.' },
+  { title: 'Post jobs', owner: 'Recruiting Ops', status: 'Live', detail: 'LinkedIn, careers page, and referral portal.' },
+  { title: 'Source candidates', owner: 'Sourcing', status: 'Running', detail: 'Talent AI ranks inbound and sourced profiles.' },
+  { title: 'Screen resumes', owner: 'Recruiter', status: 'In review', detail: 'Semantic fit and signal-based resume screen.' },
+  { title: 'Shortlist candidates', owner: 'Hiring Manager', status: '5 shortlisted', detail: 'Shortlist generated from ranking engine.' },
+  { title: 'Schedule interviews', owner: 'Coordinator', status: 'Today', detail: 'Panel slots reserved across time zones.' },
+  { title: 'Coordinate interviews', owner: 'Coordinator', status: 'On track', detail: 'Calendar, reminders, and panel briefs.' },
+  { title: 'Collect feedback', owner: 'Interview Panel', status: '3 pending', detail: 'Structured scorecards due within 24 hours.' },
+  { title: 'Select candidates', owner: 'Hiring Manager', status: 'Decision', detail: 'Calibration compares skills, signal, and fit.' },
+  { title: 'Generate offer letters', owner: 'HR Ops', status: 'Draft', detail: 'Offer packet and compensation template ready.' },
+  { title: 'Negotiate offers', owner: 'Recruiter', status: 'Open', detail: 'Approval guardrails and counter-offer notes.' },
+  { title: 'Hire candidates', owner: 'People Ops', status: '2 joining', detail: 'Move accepted offers into onboarding.' },
+];
+
+const onboardingTasks = [
+  { title: 'Collect documents', status: '12 pending', owner: 'New hires', detail: 'Identity, address, education, bank, and tax forms.' },
+  { title: 'Verify documents', status: '6 in review', owner: 'People Ops', detail: 'Background and statutory verification queue.' },
+  { title: 'Create employee records', status: '3 ready', owner: 'HRIS Admin', detail: 'Employee IDs, reporting lines, pay groups.' },
+  { title: 'Assign onboarding tasks', status: 'Live', owner: 'Buddy + IT', detail: 'Laptop, accounts, seating, induction checklist.' },
+  { title: 'Conduct orientation', status: 'Fri 10:00', owner: 'People Team', detail: 'Culture, compliance, benefits, and team intro.' },
+];
+
+const employeeOps = [
+  { title: 'Maintain employee database', status: '486 records', owner: 'HRIS', detail: 'Single source of truth for employee lifecycle data.' },
+  { title: 'Manage employee records', status: '21 updates', owner: 'People Ops', detail: 'Contracts, compensation, manager, role and location history.' },
+  { title: 'Update employee information', status: '8 requests', owner: 'Employees', detail: 'Self-service updates with HR approval.' },
+  { title: 'Handle transfers/promotion', status: '5 active', owner: 'HRBP', detail: 'Transfer letters, org changes, grade updates.' },
+];
+
+const payrollBenefits = [
+  { title: 'Process salaries', status: '97% ready', owner: 'Payroll', detail: 'Inputs locked, attendance synced, tax checks pending.' },
+  { title: 'Manage reimbursements', status: '34 claims', owner: 'Finance', detail: 'Travel, wellness, internet, and business expenses.' },
+  { title: 'Handle tax documents', status: '5 pending', owner: 'Employees', detail: 'Declarations, proofs, Form 16, and exemptions.' },
+  { title: 'Manage benefits and insurance', status: '441 enrolled', owner: 'Benefits', detail: 'Medical, life, wellness, and dependent coverage.' },
+];
+
+const performanceOps = [
+  { title: 'Set goals', status: '82%', owner: 'Managers', detail: 'OKRs and role goals aligned to teams.' },
+  { title: 'Conduct review', status: '61%', owner: 'Managers', detail: 'Mid-year review cycle in progress.' },
+  { title: 'Gather feedback', status: '34%', owner: 'Peers', detail: '360 feedback and panel comments.' },
+  { title: 'Track performance', status: 'Live', owner: 'HRBP', detail: 'Performance trends, high-potential bench, and risk flags.' },
+];
+
+const relationsOps = [
+  { title: 'Resolve conflicts', status: '2 open', owner: 'HRBP', detail: 'Mediation plans and manager action logs.' },
+  { title: 'Handle grievances', status: '1 urgent', owner: 'Employee Relations', detail: 'Confidential case management with SLA tracking.' },
+  { title: 'Conduct engagement activities', status: '4 planned', owner: 'Culture Team', detail: 'Pulse surveys, town halls, team rituals.' },
+  { title: 'Support employee wellbeing', status: 'Active', owner: 'Wellbeing Lead', detail: 'Counselling, wellness reimbursements, burnout signals.' },
+];
+
+const complianceOps = [
+  { title: 'Maintain HR policies', status: '4 due', owner: 'Policy Owner', detail: 'Code of conduct, leave, POSH, information security.' },
+  { title: 'Ensure labor law compliance', status: '98%', owner: 'Legal', detail: 'State rules, working hours, statutory registers.' },
+  { title: 'Manage contracts', status: '17 renewals', owner: 'Legal Ops', detail: 'Employment, contractor, vendor, and offer contracts.' },
+  { title: 'Conduct audits', status: 'Q2 audit', owner: 'Compliance', detail: 'Payroll, access, documents, policy attestation.' },
+];
+
+const learningOps = [
+  { title: 'Identify skill gaps', status: '39 gaps', owner: 'L&D', detail: 'Role matrix compared with performance and project needs.' },
+  { title: 'Assign training', status: '126 assigned', owner: 'Managers', detail: 'Compliance, leadership, technical, and product modules.' },
+  { title: 'Track certifications', status: '72 valid', owner: 'L&D Admin', detail: 'Expiry alerts and certification evidence.' },
+  { title: 'Career development planning', status: '24 plans', owner: 'HRBP', detail: 'Internal mobility, mentoring, succession readiness.' },
+];
+
+const analyticsReports = [
+  { title: 'Hiring metrics', status: '47 open roles', owner: 'Talent Ops', detail: 'Source quality, time-to-hire, offer acceptance, funnel conversion.' },
+  { title: 'Attrition analysis', status: '8.4% risk', owner: 'People Analytics', detail: 'Risk by team, tenure, manager, engagement and performance.' },
+  { title: 'Workforce planning', status: 'FY 2026', owner: 'Leadership', detail: 'Headcount plan, capacity forecast, critical roles.' },
+  { title: 'HR reports', status: '12 reports', owner: 'HR Ops', detail: 'Board pack, compliance report, payroll summary, DEI snapshot.' },
+];
 
 const defaultData = {
   company: {
@@ -237,13 +317,36 @@ function App() {
           />
         )}
         {active === 'Recruiting' && <RecruitingView hiringStages={hiringStages} addCandidate={addCandidate} />}
+        {active === 'Onboarding' && <LifecycleView title="Onboarding" intro="Move accepted candidates into productive employees with document, verification, HRIS, task, and orientation controls." items={onboardingTasks} />}
         {active === 'Attendance' && <AttendanceView requests={requests} approveRequest={approveRequest} />}
         {active === 'Payroll' && <PayrollView company={company} selectedPeriod={selectedPeriod} setSelectedPeriod={setSelectedPeriod} />}
         {active === 'Performance' && <PerformanceView employees={employees} />}
-        {active === 'Policies' && <PoliciesView />}
+        {active === 'Relations' && <LifecycleView title="Employee Relations" intro="Track conflict resolution, grievances, engagement activity, and wellbeing support in one confidential operating queue." items={relationsOps} />}
+        {active === 'Compliance' && <LifecycleView title="Compliance & Policies" intro="Maintain policies, contracts, labor law controls, and audit readiness across the organization." items={complianceOps} />}
+        {active === 'Learning' && <LifecycleView title="Learning & Development" intro="Identify skill gaps, assign training, track certifications, and plan career development." items={learningOps} />}
+        {active === 'Analytics' && <LifecycleView title="Analytics & Reporting" intro="Monitor hiring metrics, attrition analysis, workforce planning, and executive HR reports." items={analyticsReports} />}
         {active === 'Assets' && <AssetsView />}
       </section>
     </main>
+  );
+}
+
+function LifecycleView({ title, intro, items }) {
+  return (
+    <div className="stack">
+      <section className="hero-panel module-hero">
+        <div>
+          <h2>{title}</h2>
+          <p>{intro}</p>
+        </div>
+        <div className="hero-metrics">
+          <Metric label="Workflows" value={String(items.length)} trend="Configured" />
+          <Metric label="Open items" value={String(items.filter((item) => !item.status.toLowerCase().includes('ready')).length)} trend="Needs action" />
+          <Metric label="Owners" value={String(new Set(items.map((item) => item.owner)).size)} trend="Accountable" />
+        </div>
+      </section>
+      <WorkflowGrid items={items} />
+    </div>
   );
 }
 
@@ -398,6 +501,10 @@ function CommandCenter(props) {
 function EmployeesView({ teams, teamFilter, setTeamFilter, search, setSearch, filteredEmployees }) {
   return (
     <div className="stack">
+      <section className="wide-panel">
+        <SectionHeader title="Employee Management Operations" action="Database, records, updates, movement" />
+        <WorkflowGrid items={employeeOps} compact />
+      </section>
       <section className="toolbar-band">
         <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search employees, roles, locations" />
         <div className="segmented" role="group" aria-label="Filter by team">
@@ -416,6 +523,18 @@ function EmployeesView({ teams, teamFilter, setTeamFilter, search, setSearch, fi
 function RecruitingView({ hiringStages, addCandidate }) {
   return (
     <div className="stack">
+      <section className="hero-panel recruiting-hero">
+        <div>
+          <h2>Recruitment & Hiring</h2>
+          <p>Create jobs, post roles, source talent, screen resumes, shortlist candidates, coordinate interviews, collect feedback, select finalists, generate offers, negotiate, and hire.</p>
+        </div>
+        <div className="hero-metrics">
+          <Metric label="Hiring steps" value={String(hiringWorkflow.length)} trend="End to end" />
+          <Metric label="Open roles" value="47" trend="12 priority" />
+          <Metric label="Offer acceptance" value="72%" trend="+4%" />
+        </div>
+      </section>
+      <WorkflowGrid items={hiringWorkflow} />
       <section className="wide-panel">
         <SectionHeader title="Hiring Pipeline" action={`${hiringStages.reduce((total, stage) => total + stage.count, 0)} active candidates`} />
         <Pipeline hiringStages={hiringStages} addCandidate={addCandidate} />
@@ -465,6 +584,23 @@ function AttendanceView({ requests, approveRequest }) {
           ))}
         </div>
       </section>
+      <section className="wide-panel">
+        <SectionHeader title="Absenteeism Monitor" action="Exceptions and trend" />
+        <div className="absence-grid">
+          {[
+            ['Unplanned absence', '11 cases', 56],
+            ['Late arrivals', '24 events', 72],
+            ['No punch records', '7 records', 38],
+            ['Leave balance risk', '18 people', 64],
+          ].map(([label, value, score]) => (
+            <article key={label}>
+              <strong>{label}</strong>
+              <span>{value}</span>
+              <div className="bar"><i style={{ width: `${score}%` }} /></div>
+            </article>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
@@ -475,6 +611,10 @@ function PayrollView({ company, selectedPeriod, setSelectedPeriod }) {
       <section className="wide-panel">
         <SectionHeader title="Payroll Run" action={company.payCycle} />
         <PayrollControl selectedPeriod={selectedPeriod} setSelectedPeriod={setSelectedPeriod} />
+      </section>
+      <section className="wide-panel">
+        <SectionHeader title="Payroll & Benefits Operations" action="Salary, tax, claims, insurance" />
+        <WorkflowGrid items={payrollBenefits} compact />
       </section>
       <section className="panel">
         <SectionHeader title="Exception Queue" action="Resolve" />
@@ -494,7 +634,12 @@ function PayrollView({ company, selectedPeriod, setSelectedPeriod }) {
 
 function PerformanceView({ employees }) {
   return (
-    <div className="two-column">
+    <div className="stack">
+      <section className="wide-panel">
+        <SectionHeader title="Performance Management Operations" action="Goals, reviews, feedback, tracking" />
+        <WorkflowGrid items={performanceOps} compact />
+      </section>
+      <section className="two-column">
       <section className="panel">
         <SectionHeader title="Review Cycle" action="Mid-year" />
         {['Self reviews', 'Manager reviews', 'Calibration', 'Letters'].map((stage, index) => (
@@ -509,25 +654,27 @@ function PerformanceView({ employees }) {
         <SectionHeader title="High Potential Bench" action={`${employees.filter((employee) => employee.score >= 90).length} people`} />
         <EmployeeTable employees={employees.filter((employee) => employee.score >= 90)} compact />
       </section>
+      </section>
     </div>
   );
 }
 
-function PoliciesView() {
+function WorkflowGrid({ items, compact = false }) {
   return (
-    <div className="stack">
-      <section className="wide-panel">
-        <SectionHeader title="Policy Attestation" action="45 due" />
-        <div className="policy-grid">
-          {['Code of Conduct', 'Information Security', 'POSH Training', 'Leave Policy'].map((policy, index) => (
-            <article className="policy-item" key={policy}>
-              <strong>{policy}</strong>
-              <span>{[96, 91, 88, 94][index]}% complete</span>
-              <div className="meter"><i style={{ width: `${[96, 91, 88, 94][index]}%` }} /></div>
-            </article>
-          ))}
-        </div>
-      </section>
+    <div className={compact ? 'workflow-grid compact' : 'workflow-grid'}>
+      {items.map((item) => (
+        <article className="workflow-card" key={item.title}>
+          <div className="workflow-top">
+            <strong>{item.title}</strong>
+            <span>{item.status}</span>
+          </div>
+          <p>{item.detail}</p>
+          <div className="workflow-footer">
+            <span>{item.owner}</span>
+            <button className="text-button">Open</button>
+          </div>
+        </article>
+      ))}
     </div>
   );
 }
