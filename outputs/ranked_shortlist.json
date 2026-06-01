@@ -1,0 +1,285 @@
+{
+  "job_id": "JOB-TALENT-AI-001",
+  "generated_at": "2026-06-01T06:23:49.245Z",
+  "methodology": {
+    "contextual_relevance": "Expanded token and synonym overlap with job description.",
+    "skill_signal": "Coverage of required hiring-intelligence concepts.",
+    "seniority_fit": "Experience years and progression metadata.",
+    "behavioral_signal": "Profile completeness, response rate, project activity, and job-change intent.",
+    "activity_recency": "Recent platform activity.",
+    "availability_intent": "Open-to-work flag and inferred intent."
+  },
+  "ranked_candidates": [
+    {
+      "candidate_id": "CAND-001",
+      "name": "Aarav Menon",
+      "rank": 1,
+      "score": 79.24,
+      "recommendation": "Strong shortlist",
+      "component_scores": {
+        "contextual_relevance": 60,
+        "skill_signal": 80,
+        "seniority_fit": 97,
+        "behavioral_signal": 87,
+        "activity_recency": 93,
+        "availability_intent": 100
+      },
+      "matched_signals": [
+        "machine learning",
+        "semantic search",
+        "ranking models",
+        "vector retrieval",
+        "senior",
+        "engineer",
+        "ranking",
+        "systems",
+        "machine",
+        "learning",
+        "semantic",
+        "search"
+      ],
+      "rationale": "Aarav Menon ranks highly because of machine learning, semantic search, ranking models, vector retrieval. Component scores show 60/100 contextual relevance, 87/100 behavioral signal, and 97/100 seniority fit.",
+      "profile_snapshot": {
+        "headline": "Senior ML Engineer building semantic search and recommender systems",
+        "current_role": "Senior ML Engineer",
+        "experience_years": 8,
+        "industry": "marketplace",
+        "location": "Bengaluru"
+      }
+    },
+    {
+      "candidate_id": "CAND-006",
+      "name": "Meera Thomas",
+      "rank": 2,
+      "score": 59.27,
+      "recommendation": "Review shortlist",
+      "component_scores": {
+        "contextual_relevance": 30,
+        "skill_signal": 40,
+        "seniority_fit": 100,
+        "behavioral_signal": 77,
+        "activity_recency": 89,
+        "availability_intent": 100
+      },
+      "matched_signals": [
+        "recruiter workflows",
+        "explainable ai",
+        "talent",
+        "data",
+        "recruiter",
+        "workflows",
+        "explainable",
+        "product",
+        "hr-tech"
+      ],
+      "rationale": "Meera Thomas ranks highly because of recruiter workflows, explainable ai, talent, data. Component scores show 30/100 contextual relevance, 77/100 behavioral signal, and 100/100 seniority fit.",
+      "profile_snapshot": {
+        "headline": "Technical product manager for AI recruiting tools and talent analytics",
+        "current_role": "Technical Product Manager",
+        "experience_years": 10,
+        "industry": "hr-tech",
+        "location": "Bengaluru"
+      }
+    },
+    {
+      "candidate_id": "CAND-008",
+      "name": "Anika Bose",
+      "rank": 3,
+      "score": 55.25,
+      "recommendation": "Review shortlist",
+      "component_scores": {
+        "contextual_relevance": 30,
+        "skill_signal": 40,
+        "seniority_fit": 80,
+        "behavioral_signal": 75,
+        "activity_recency": 80,
+        "availability_intent": 100
+      },
+      "matched_signals": [
+        "api design",
+        "data pipelines",
+        "engineer",
+        "apis",
+        "data",
+        "python",
+        "api",
+        "design",
+        "pipelines"
+      ],
+      "rationale": "Anika Bose ranks highly because of api design, data pipelines, engineer, apis. Component scores show 30/100 contextual relevance, 75/100 behavioral signal, and 80/100 seniority fit.",
+      "profile_snapshot": {
+        "headline": "Data engineer specializing in pipelines, warehouse modeling, and analytics APIs",
+        "current_role": "Data Engineer",
+        "experience_years": 6,
+        "industry": "healthtech",
+        "location": "Kolkata"
+      }
+    },
+    {
+      "candidate_id": "CAND-003",
+      "name": "Kabir Sethi",
+      "rank": 4,
+      "score": 49.89,
+      "recommendation": "Backup pool",
+      "component_scores": {
+        "contextual_relevance": 30,
+        "skill_signal": 40,
+        "seniority_fit": 63,
+        "behavioral_signal": 72,
+        "activity_recency": 96,
+        "availability_intent": 48
+      },
+      "matched_signals": [
+        "data pipelines",
+        "explainable ai",
+        "experience",
+        "data",
+        "explainable",
+        "model",
+        "python",
+        "pipelines",
+        "vector retrieval"
+      ],
+      "rationale": "Kabir Sethi ranks highly because of data pipelines, explainable ai, experience, data. Component scores show 30/100 contextual relevance, 72/100 behavioral signal, and 63/100 seniority fit.",
+      "profile_snapshot": {
+        "headline": "Data scientist with NLP, embeddings, and explainable model evaluation experience",
+        "current_role": "Data Scientist",
+        "experience_years": 5,
+        "industry": "saas",
+        "location": "Mumbai"
+      }
+    },
+    {
+      "candidate_id": "CAND-002",
+      "name": "Diya Nair",
+      "rank": 5,
+      "score": 48.54,
+      "recommendation": "Backup pool",
+      "component_scores": {
+        "contextual_relevance": 17,
+        "skill_signal": 20,
+        "seniority_fit": 80,
+        "behavioral_signal": 84,
+        "activity_recency": 87,
+        "availability_intent": 100
+      },
+      "matched_signals": [
+        "api design",
+        "engineer",
+        "backend",
+        "recruiter",
+        "javascript",
+        "api",
+        "design",
+        "hr-tech"
+      ],
+      "rationale": "Diya Nair ranks highly because of api design, engineer, backend, recruiter. Component scores show 17/100 contextual relevance, 84/100 behavioral signal, and 80/100 seniority fit.",
+      "profile_snapshot": {
+        "headline": "Backend engineer focused on HR platforms and recruiter workflow automation",
+        "current_role": "Backend Engineer",
+        "experience_years": 6,
+        "industry": "hr-tech",
+        "location": "Hyderabad"
+      }
+    },
+    {
+      "candidate_id": "CAND-004",
+      "name": "Ishita Roy",
+      "rank": 6,
+      "score": 48.02,
+      "recommendation": "Backup pool",
+      "component_scores": {
+        "contextual_relevance": 17,
+        "skill_signal": 20,
+        "seniority_fit": 88,
+        "behavioral_signal": 80,
+        "activity_recency": 73,
+        "availability_intent": 100
+      },
+      "matched_signals": [
+        "ranking models",
+        "senior",
+        "engineer",
+        "ranking",
+        "systems",
+        "search",
+        "models",
+        "relevance",
+        "javascript"
+      ],
+      "rationale": "Ishita Roy ranks highly because of ranking models, senior, engineer, ranking. Component scores show 17/100 contextual relevance, 80/100 behavioral signal, and 88/100 seniority fit.",
+      "profile_snapshot": {
+        "headline": "Product-minded search relevance engineer for ecommerce discovery systems",
+        "current_role": "Search Relevance Engineer",
+        "experience_years": 7,
+        "industry": "ecommerce",
+        "location": "Remote"
+      }
+    },
+    {
+      "candidate_id": "CAND-007",
+      "name": "Neel Verma",
+      "rank": 7,
+      "score": 46.23,
+      "recommendation": "Backup pool",
+      "component_scores": {
+        "contextual_relevance": 16,
+        "skill_signal": 20,
+        "seniority_fit": 55,
+        "behavioral_signal": 90,
+        "activity_recency": 98,
+        "availability_intent": 100
+      },
+      "matched_signals": [
+        "api design",
+        "engineer",
+        "apis",
+        "dashboards",
+        "javascript",
+        "api",
+        "design",
+        "shipping"
+      ],
+      "rationale": "Neel Verma ranks highly because of api design, engineer, apis, dashboards. Component scores show 16/100 contextual relevance, 90/100 behavioral signal, and 55/100 seniority fit.",
+      "profile_snapshot": {
+        "headline": "Full-stack engineer shipping dashboards, APIs, and operational products",
+        "current_role": "Full-stack Engineer",
+        "experience_years": 4,
+        "industry": "operations software",
+        "location": "Delhi"
+      }
+    },
+    {
+      "candidate_id": "CAND-005",
+      "name": "Rohan Iyer",
+      "rank": 8,
+      "score": 26.56,
+      "recommendation": "Backup pool",
+      "component_scores": {
+        "contextual_relevance": 2,
+        "skill_signal": 0,
+        "seniority_fit": 97,
+        "behavioral_signal": 45,
+        "activity_recency": 38,
+        "availability_intent": 22
+      },
+      "matched_signals": [
+        "senior",
+        "engineer",
+        "systems",
+        "experience",
+        "backend",
+        "apis",
+        "javascript"
+      ],
+      "rationale": "Rohan Iyer ranks highly because of senior, engineer, systems, experience. Component scores show 2/100 contextual relevance, 45/100 behavioral signal, and 97/100 seniority fit.",
+      "profile_snapshot": {
+        "headline": "Security engineer with compliance automation and backend services experience",
+        "current_role": "Security Engineer",
+        "experience_years": 9,
+        "industry": "fintech",
+        "location": "Pune"
+      }
+    }
+  ]
+}

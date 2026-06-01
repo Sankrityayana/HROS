@@ -4,10 +4,14 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import OpenAI from 'openai';
+import { rankCandidates } from './ranking/ranker.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dataPath = path.join(__dirname, 'data', 'hr-data.json');
+const challengeDir = path.join(__dirname, '..', 'challenge');
+const jobDescriptionPath = path.join(challengeDir, 'job-description.txt');
+const candidatesPath = path.join(challengeDir, 'candidates.json');
 const app = express();
 const port = Number(process.env.PORT || 4173);
 
@@ -19,6 +23,17 @@ async function readData() {
 
 async function writeData(data) {
   await writeFile(dataPath, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
+}
+
+async function readChallengeData() {
+  const [jobDescription, candidatesRaw] = await Promise.all([
+    readFile(jobDescriptionPath, 'utf8'),
+    readFile(candidatesPath, 'utf8'),
+  ]);
+  return {
+    jobDescription,
+    candidates: JSON.parse(candidatesRaw),
+  };
 }
 
 function buildInsights(data) {
@@ -161,11 +176,37 @@ app.post('/api/ai/ask', async (request, response, next) => {
   }
 });
 
+app.get('/api/talent/rank', async (_request, response, next) => {
+  try {
+    const { jobDescription, candidates } = await readChallengeData();
+    response.json(rankCandidates(jobDescription, candidates, { limit: 8 }));
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/api/talent/rank', async (request, response, next) => {
+  try {
+    const { jobDescription, candidates } = request.body;
+    if (!jobDescription || !Array.isArray(candidates)) {
+      response.status(400).json({ error: 'jobDescription and candidates[] are required.' });
+      return;
+    }
+    response.json(rankCandidates(jobDescription, candidates, { limit: request.body.limit || 10 }));
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use((error, _request, response, _next) => {
   console.error(error);
   response.status(500).json({ error: 'HR OS API error.' });
 });
 
-app.listen(port, '127.0.0.1', () => {
+const server = app.listen(port, '127.0.0.1', () => {
   console.log(`HR OS API running at http://127.0.0.1:${port}`);
 });
+
+server.keepAliveTimeout = 65000;
+globalThis.hrOsServer = server;
+setInterval(() => {}, 60_000);

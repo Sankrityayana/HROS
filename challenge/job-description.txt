@@ -1,0 +1,23 @@
+Senior Talent Intelligence Engineer
+
+We are hiring a senior engineer to build predictive candidate ranking systems for modern talent acquisition. The role requires strong experience with machine learning, semantic search, ranking models, vector retrieval, backend APIs, and production data systems. The person should understand recruiter workflows, candidate signals, profile enrichment, and explainable recommendations.
+
+Core responsibilities:
+- Interpret complex job descriptions and convert them into ranking features.
+- Build contextual relevance models that go beyond keyword filtering.
+- Integrate profile attributes, career metadata, and behavioral signals.
+- Ship fast APIs and dashboards that help recruiters shortlist candidates.
+- Evaluate model quality with precision-oriented ranking metrics.
+
+Required skills:
+- JavaScript or Python backend engineering
+- Machine learning or information retrieval
+- Candidate matching, recommender systems, or search relevance
+- API design and data pipelines
+- Explainable AI and practical product thinking
+
+Preferred signals:
+- Recent hiring-tech, HR-tech, or marketplace experience
+- Strong open-source or project activity
+- High recruiter response rate
+- Evidence of shipping ranking or search systems in production

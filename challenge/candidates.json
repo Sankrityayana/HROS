@@ -1,0 +1,178 @@
+[
+  {
+    "candidate_id": "CAND-001",
+    "name": "Aarav Menon",
+    "headline": "Senior ML Engineer building semantic search and recommender systems",
+    "skills": ["python", "machine learning", "semantic search", "ranking models", "vector retrieval", "fastapi", "postgres"],
+    "experience_years": 8,
+    "current_role": "Senior ML Engineer",
+    "industry": "marketplace",
+    "career_metadata": {
+      "companies": ["SearchGrid", "Marketly"],
+      "role_progression": "senior",
+      "last_active_days": 3,
+      "location": "Bengaluru",
+      "open_to_work": true
+    },
+    "behavioral_signals": {
+      "profile_completeness": 96,
+      "response_rate": 84,
+      "recent_project_activity": 91,
+      "job_change_intent": 78
+    }
+  },
+  {
+    "candidate_id": "CAND-002",
+    "name": "Diya Nair",
+    "headline": "Backend engineer focused on HR platforms and recruiter workflow automation",
+    "skills": ["javascript", "node.js", "express", "api design", "hr-tech", "workflow automation", "postgres"],
+    "experience_years": 6,
+    "current_role": "Backend Engineer",
+    "industry": "hr-tech",
+    "career_metadata": {
+      "companies": ["HireLoop", "PeopleOS"],
+      "role_progression": "mid-senior",
+      "last_active_days": 6,
+      "location": "Hyderabad",
+      "open_to_work": true
+    },
+    "behavioral_signals": {
+      "profile_completeness": 91,
+      "response_rate": 89,
+      "recent_project_activity": 74,
+      "job_change_intent": 82
+    }
+  },
+  {
+    "candidate_id": "CAND-003",
+    "name": "Kabir Sethi",
+    "headline": "Data scientist with NLP, embeddings, and explainable model evaluation experience",
+    "skills": ["python", "nlp", "embeddings", "model evaluation", "explainable ai", "scikit-learn", "data pipelines"],
+    "experience_years": 5,
+    "current_role": "Data Scientist",
+    "industry": "saas",
+    "career_metadata": {
+      "companies": ["ModelDesk", "Insightly"],
+      "role_progression": "mid",
+      "last_active_days": 2,
+      "location": "Mumbai",
+      "open_to_work": false
+    },
+    "behavioral_signals": {
+      "profile_completeness": 88,
+      "response_rate": 62,
+      "recent_project_activity": 86,
+      "job_change_intent": 48
+    }
+  },
+  {
+    "candidate_id": "CAND-004",
+    "name": "Ishita Roy",
+    "headline": "Product-minded search relevance engineer for ecommerce discovery systems",
+    "skills": ["search relevance", "ranking models", "a/b testing", "javascript", "python", "elasticsearch", "product analytics"],
+    "experience_years": 7,
+    "current_role": "Search Relevance Engineer",
+    "industry": "ecommerce",
+    "career_metadata": {
+      "companies": ["CartWise", "BrowseAI"],
+      "role_progression": "senior",
+      "last_active_days": 12,
+      "location": "Remote",
+      "open_to_work": true
+    },
+    "behavioral_signals": {
+      "profile_completeness": 93,
+      "response_rate": 76,
+      "recent_project_activity": 80,
+      "job_change_intent": 72
+    }
+  },
+  {
+    "candidate_id": "CAND-005",
+    "name": "Rohan Iyer",
+    "headline": "Security engineer with compliance automation and backend services experience",
+    "skills": ["security", "node.js", "compliance", "backend APIs", "cloud", "risk systems"],
+    "experience_years": 9,
+    "current_role": "Security Engineer",
+    "industry": "fintech",
+    "career_metadata": {
+      "companies": ["VaultPay", "SecureOps"],
+      "role_progression": "senior",
+      "last_active_days": 28,
+      "location": "Pune",
+      "open_to_work": false
+    },
+    "behavioral_signals": {
+      "profile_completeness": 84,
+      "response_rate": 42,
+      "recent_project_activity": 38,
+      "job_change_intent": 22
+    }
+  },
+  {
+    "candidate_id": "CAND-006",
+    "name": "Meera Thomas",
+    "headline": "Technical product manager for AI recruiting tools and talent analytics",
+    "skills": ["talent analytics", "recruiter workflows", "ai product", "data analysis", "explainable ai", "roadmapping"],
+    "experience_years": 10,
+    "current_role": "Technical Product Manager",
+    "industry": "hr-tech",
+    "career_metadata": {
+      "companies": ["TalentGraph", "RecruitIQ"],
+      "role_progression": "lead",
+      "last_active_days": 5,
+      "location": "Bengaluru",
+      "open_to_work": true
+    },
+    "behavioral_signals": {
+      "profile_completeness": 97,
+      "response_rate": 81,
+      "recent_project_activity": 69,
+      "job_change_intent": 64
+    }
+  },
+  {
+    "candidate_id": "CAND-007",
+    "name": "Neel Verma",
+    "headline": "Full-stack engineer shipping dashboards, APIs, and operational products",
+    "skills": ["react", "node.js", "express", "dashboards", "postgres", "typescript", "api design"],
+    "experience_years": 4,
+    "current_role": "Full-stack Engineer",
+    "industry": "operations software",
+    "career_metadata": {
+      "companies": ["OpsBoard"],
+      "role_progression": "mid",
+      "last_active_days": 1,
+      "location": "Delhi",
+      "open_to_work": true
+    },
+    "behavioral_signals": {
+      "profile_completeness": 82,
+      "response_rate": 93,
+      "recent_project_activity": 95,
+      "job_change_intent": 88
+    }
+  },
+  {
+    "candidate_id": "CAND-008",
+    "name": "Anika Bose",
+    "headline": "Data engineer specializing in pipelines, warehouse modeling, and analytics APIs",
+    "skills": ["data pipelines", "python", "sql", "postgres", "etl", "analytics", "api design"],
+    "experience_years": 6,
+    "current_role": "Data Engineer",
+    "industry": "healthtech",
+    "career_metadata": {
+      "companies": ["CareData", "MetricFlow"],
+      "role_progression": "mid-senior",
+      "last_active_days": 9,
+      "location": "Kolkata",
+      "open_to_work": true
+    },
+    "behavioral_signals": {
+      "profile_completeness": 89,
+      "response_rate": 71,
+      "recent_project_activity": 77,
+      "job_change_intent": 66
+    }
+  }
+]

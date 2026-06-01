@@ -4,6 +4,7 @@ import './styles.css';
 
 const navItems = [
   'Command Center',
+  'Talent AI',
   'Employees',
   'Recruiting',
   'Attendance',
@@ -15,6 +16,7 @@ const navItems = [
 
 const iconPaths = {
   'Command Center': 'M4 13h6V4H4v9Zm10 7h6V4h-6v16ZM4 20h6v-5H4v5Z',
+  'Talent AI': 'M12 3 14.6 8.6 21 9.3 16.2 13.7 17.6 20 12 16.8 6.4 20 7.8 13.7 3 9.3 9.4 8.6 12 3Z',
   Employees: 'M7 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm10-1a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 20c.3-4 2.7-6 5-6s4.7 2 5 6H2Zm11.5 0c.2-2.5 1.5-4.2 3.5-4.2 2.1 0 3.6 1.7 3.9 4.2h-7.4Z',
   Recruiting: 'M4 5h16v4H4V5Zm0 6h10v4H4v-4Zm0 6h16v2H4v-2Zm13-6 4 2-4 2v-4Z',
   Attendance: 'M5 3h14v18H5V3Zm3 4h8v2H8V7Zm0 4h8v2H8v-2Zm0 4h5v2H8v-2Z',
@@ -83,11 +85,14 @@ function App() {
   const [aiAnswer, setAiAnswer] = useState('');
   const [aiMode, setAiMode] = useState('local');
   const [aiLoading, setAiLoading] = useState(false);
+  const [ranking, setRanking] = useState(null);
+  const [rankingStatus, setRankingStatus] = useState('Loading ranking engine...');
 
   const { company, employees, requests, hiringStages, metrics, insights } = data;
 
   useEffect(() => {
     loadHrData();
+    loadRanking();
   }, []);
 
   async function loadHrData() {
@@ -138,6 +143,16 @@ function App() {
       setAiMode('error');
     } finally {
       setAiLoading(false);
+    }
+  }
+
+  async function loadRanking() {
+    try {
+      const result = await api('/api/talent/rank');
+      setRanking(result);
+      setRankingStatus('Ranking engine ready');
+    } catch (error) {
+      setRankingStatus(error.message);
     }
   }
 
@@ -210,6 +225,7 @@ function App() {
             askAi={askAi}
           />
         )}
+        {active === 'Talent AI' && <TalentAiView ranking={ranking} rankingStatus={rankingStatus} loadRanking={loadRanking} />}
         {active === 'Employees' && (
           <EmployeesView
             teams={teams}
@@ -228,6 +244,75 @@ function App() {
         {active === 'Assets' && <AssetsView />}
       </section>
     </main>
+  );
+}
+
+function TalentAiView({ ranking, rankingStatus, loadRanking }) {
+  const candidates = ranking?.ranked_candidates || [];
+
+  return (
+    <div className="stack">
+      <section className="hero-panel talent-hero">
+        <div>
+          <h2>Predictive candidate ranking engine</h2>
+          <p>Deep job understanding, contextual relevance, career metadata, and behavioral signals are fused into an explainable shortlist.</p>
+        </div>
+        <div className="hero-metrics">
+          <Metric label="Candidates ranked" value={String(candidates.length)} trend={rankingStatus} />
+          <Metric label="Top score" value={candidates[0] ? String(candidates[0].score) : '0'} trend={candidates[0]?.recommendation || 'Waiting'} />
+          <Metric label="Output file" value="JSON" trend="outputs/ranked_shortlist.json" />
+        </div>
+      </section>
+
+      <section className="wide-panel">
+        <SectionHeader title="Ranked Shortlist" action={ranking?.job_id || 'Challenge POC'} />
+        <div className="ranking-actions">
+          <button className="primary-button" onClick={loadRanking}>Run ranking</button>
+          <span>{rankingStatus}</span>
+        </div>
+        <div className="ranking-list">
+          {candidates.map((candidate) => (
+            <article className="ranking-card" key={candidate.candidate_id}>
+              <div className="rank-badge">#{candidate.rank}</div>
+              <div className="rank-main">
+                <div className="rank-title">
+                  <div>
+                    <strong>{candidate.name}</strong>
+                    <span>{candidate.profile_snapshot.headline}</span>
+                  </div>
+                  <div className="score-pill">{candidate.score}</div>
+                </div>
+                <p>{candidate.rationale}</p>
+                <div className="signal-row">
+                  {candidate.matched_signals.slice(0, 6).map((signal) => <span key={signal}>{signal}</span>)}
+                </div>
+                <div className="score-grid">
+                  {Object.entries(candidate.component_scores).map(([label, value]) => (
+                    <label key={label}>
+                      <span>{label.replaceAll('_', ' ')}</span>
+                      <div className="bar"><i style={{ width: `${value}%` }} /></div>
+                      <strong>{value}</strong>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="wide-panel">
+        <SectionHeader title="Methodology Blueprint" action="Explainable scoring" />
+        <div className="method-grid">
+          {ranking && Object.entries(ranking.methodology).map(([name, description]) => (
+            <article key={name}>
+              <strong>{name.replaceAll('_', ' ')}</strong>
+              <span>{description}</span>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
   );
 }
 

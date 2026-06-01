@@ -263,6 +263,12 @@ h1 {
   color: #ffffff;
 }
 
+.talent-hero {
+  background:
+    linear-gradient(120deg, rgba(45, 91, 154, 0.95), rgba(24, 33, 28, 0.96)),
+    radial-gradient(circle at 95% 20%, rgba(230, 179, 95, 0.34), transparent 36%);
+}
+
 .hero-panel h2 {
   max-width: 740px;
   font-size: clamp(32px, 5vw, 64px);
@@ -626,6 +632,146 @@ td span {
   line-height: 1.45;
 }
 
+.ranking-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.ranking-actions span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ranking-list {
+  display: grid;
+  gap: 14px;
+}
+
+.ranking-card {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.rank-badge {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #e7eef9;
+  color: var(--accent-2);
+  font-weight: 800;
+}
+
+.rank-main {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.rank-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rank-title strong,
+.rank-title span {
+  display: block;
+}
+
+.rank-title strong {
+  font-size: 18px;
+}
+
+.rank-title span,
+.ranking-card p {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.score-pill {
+  display: grid;
+  place-items: center;
+  min-width: 62px;
+  height: 38px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.signal-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.signal-row span {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #f1f5f2;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.score-grid label {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.score-grid label span {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.method-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.method-grid article {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.method-grid strong {
+  text-transform: capitalize;
+}
+
+.method-grid span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
 .policy-item {
   display: grid;
   gap: 10px;
@@ -670,7 +816,9 @@ td span {
   .pipeline,
   .payroll-steps,
   .snapshot-grid,
-  .policy-grid {
+  .policy-grid,
+  .score-grid,
+  .method-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -708,8 +856,21 @@ td span {
   .payroll-steps,
   .snapshot-grid,
   .policy-grid,
+  .score-grid,
+  .method-grid,
   .ai-console {
     grid-template-columns: 1fr;
+  }
+
+  .ranking-card,
+  .rank-title {
+    grid-template-columns: 1fr;
+  }
+
+  .ranking-card,
+  .rank-title,
+  .ranking-actions {
+    display: grid;
   }
 
   .pipeline .primary-button {
