@@ -16,13 +16,14 @@ const navItems = [
   'Learning',
   'Analytics',
   'Assets',
+  'Audit',
 ];
 
 const navGroups = [
   { label: 'Control', items: ['Command Center', 'Talent AI'] },
   { label: 'People Ops', items: ['Recruiting', 'Onboarding', 'Employees', 'Attendance', 'Payroll'] },
   { label: 'Culture', items: ['Performance', 'Relations', 'Learning'] },
-  { label: 'Governance', items: ['Compliance', 'Analytics', 'Assets'] },
+  { label: 'Governance', items: ['Compliance', 'Analytics', 'Assets', 'Audit'] },
 ];
 
 const pageMeta = {
@@ -39,6 +40,7 @@ const pageMeta = {
   Learning: 'Skill gaps, training assignments, certifications, and career plans.',
   Analytics: 'Hiring metrics, attrition analysis, workforce planning, and HR reports.',
   Assets: 'Assigned assets, access tokens, warranty risks, and exit recovery.',
+  Audit: 'Role-based activity history for approvals, hiring, employee updates, and admin actions.',
 };
 
 const iconPaths = {
@@ -55,6 +57,7 @@ const iconPaths = {
   Learning: 'M4 5 12 2l8 3v10l-8 3-8-3V5Zm4 13h8v3H8v-3Z',
   Analytics: 'M4 19V5h2v14H4Zm5 0v-8h2v8H9Zm5 0V8h2v11h-2Zm5 0V3h2v16h-2Z',
   Assets: 'M4 7 12 3l8 4v10l-8 4-8-4V7Zm8 2 4-2-4-2-4 2 4 2Zm-6 .5v6l5 2.5v-6L6 9.5Zm12 0-5 2.5v6l5-2.5v-6Z',
+  Audit: 'M5 3h14v18H5V3Zm3 4h8v2H8V7Zm0 4h8v2H8v-2Zm0 4h5v2H8v-2Zm8 1 2 2 4-5-1.5-1.2-2.6 3.2-1.1-1.1L16 16Z',
 };
 
 const hiringWorkflow = [
@@ -142,6 +145,8 @@ const defaultData = {
   employees: [],
   requests: [],
   hiringStages: [],
+  jobs: [],
+  auditLogs: [],
   insights: [],
   metrics: {
     headcount: 0,
@@ -156,14 +161,21 @@ const defaultData = {
 };
 
 async function api(path, options) {
+  const token = localStorage.getItem('hr_os_token');
   const response = await fetch(path, {
-    headers: { 'Content-Type': 'application/json' },
     ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options?.headers || {}),
+    },
   });
 
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
-    throw new Error(body.error || 'API request failed.');
+    const error = new Error(body.error || 'API request failed.');
+    error.status = response.status;
+    throw error;
   }
 
   return response.json();
@@ -178,6 +190,10 @@ function Icon({ name }) {
 }
 
 function App() {
+  const [session, setSession] = useState(() => {
+    const saved = localStorage.getItem('hr_os_session');
+    return saved ? JSON.parse(saved) : null;
+  });
   const [active, setActive] = useState('Command Center');
   const [teamFilter, setTeamFilter] = useState('All');
   const [search, setSearch] = useState('');
@@ -190,13 +206,41 @@ function App() {
   const [aiLoading, setAiLoading] = useState(false);
   const [ranking, setRanking] = useState(null);
   const [rankingStatus, setRankingStatus] = useState('Loading ranking engine...');
+  const [employeeDraft, setEmployeeDraft] = useState(null);
+  const [actionStatus, setActionStatus] = useState('');
 
-  const { company, employees, requests, hiringStages, metrics, insights } = data;
+  const { company, employees, requests, hiringStages, metrics, insights, auditLogs } = data;
 
   useEffect(() => {
-    loadHrData();
-    loadRanking();
-  }, []);
+    if (session) {
+      loadHrData();
+      loadRanking();
+    }
+  }, [session]);
+
+  async function login(credentials) {
+    const result = await api('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+    localStorage.setItem('hr_os_token', result.token);
+    localStorage.setItem('hr_os_session', JSON.stringify(result.user));
+    setSession(result.user);
+    setStatus('Connected to HR OS API');
+  }
+
+  function logout() {
+    localStorage.removeItem('hr_os_token');
+    localStorage.removeItem('hr_os_session');
+    setSession(null);
+    setData(defaultData);
+    setRanking(null);
+    setActive('Command Center');
+  }
+
+  if (!session) {
+    return <LoginScreen login={login} status={status} />;
+  }
 
   async function loadHrData() {
     try {
@@ -204,6 +248,10 @@ function App() {
       setData(hrData);
       setStatus('Connected to HR OS API');
     } catch (error) {
+      if (error.status === 401) {
+        logout();
+        return;
+      }
       setStatus(error.message);
     }
   }
@@ -229,6 +277,27 @@ function App() {
       metrics: updated.metrics,
       insights: updated.insights,
     }));
+  }
+
+  async function createEmployee(event) {
+    event.preventDefault();
+    setActionStatus('Creating employee...');
+    try {
+      const created = await api('/api/employees', {
+        method: 'POST',
+        body: JSON.stringify(employeeDraft),
+      });
+      setData((current) => ({
+        ...current,
+        employees: [...current.employees, created.employee],
+        metrics: created.metrics,
+        insights: created.insights,
+      }));
+      setEmployeeDraft(null);
+      setActionStatus(`Created ${created.employee.name}`);
+    } catch (error) {
+      setActionStatus(error.message);
+    }
   }
 
   async function askAi(event) {
@@ -310,10 +379,31 @@ function App() {
           </div>
           <div className="topbar-actions">
             <div className="context-pill">{company.headquarters} | {company.fiscalYear}</div>
+            <div className="user-pill">{session.name}<span>{session.role}</span></div>
             <button className="ghost-button" onClick={loadHrData}>Refresh</button>
-            <button className="primary-button">Add employee</button>
+            <button className="primary-button" onClick={() => setEmployeeDraft({
+              name: '',
+              role: '',
+              team: 'People',
+              site: company.headquarters,
+              status: 'Active',
+              type: 'Full-time',
+              manager: session.name,
+              salary: 'INR TBD',
+              score: 78,
+            })}>Add employee</button>
+            <button className="ghost-button" onClick={logout}>Logout</button>
           </div>
         </header>
+        {actionStatus && <div className="notice-bar">{actionStatus}</div>}
+        {employeeDraft && (
+          <EmployeeModal
+            draft={employeeDraft}
+            setDraft={setEmployeeDraft}
+            createEmployee={createEmployee}
+            close={() => setEmployeeDraft(null)}
+          />
+        )}
 
         {active === 'Command Center' && (
           <CommandCenter
@@ -355,8 +445,144 @@ function App() {
         {active === 'Learning' && <LifecycleView title="Learning & Development" intro="Identify skill gaps, assign training, track certifications, and plan career development." items={learningOps} />}
         {active === 'Analytics' && <LifecycleView title="Analytics & Reporting" intro="Monitor hiring metrics, attrition analysis, workforce planning, and executive HR reports." items={analyticsReports} />}
         {active === 'Assets' && <AssetsView />}
+        {active === 'Audit' && <AuditView auditLogs={auditLogs} />}
       </section>
     </main>
+  );
+}
+
+function LoginScreen({ login, status }) {
+  const [credentials, setCredentials] = useState({ email: 'admin@northstar.example', password: 'admin123' });
+  const [message, setMessage] = useState(status);
+  const demoUsers = [
+    ['Admin', 'admin@northstar.example', 'admin123'],
+    ['HR', 'hr@northstar.example', 'hr123'],
+    ['Manager', 'manager@northstar.example', 'manager123'],
+  ];
+
+  async function submit(event) {
+    event.preventDefault();
+    setMessage('Signing in...');
+    try {
+      await login(credentials);
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
+
+  return (
+    <main className="login-shell">
+      <section className="login-panel">
+        <div className="login-copy">
+          <div className="brand-mark">NH</div>
+          <h1>Northstar HR OS</h1>
+          <p>Product-grade HR operations workspace with role access, AI hiring intelligence, employee records, approvals, payroll readiness, and audit history.</p>
+        </div>
+        <form className="login-form" onSubmit={submit}>
+          <h2>Sign in</h2>
+          <label>
+            <span>Email</span>
+            <input value={credentials.email} onChange={(event) => setCredentials({ ...credentials, email: event.target.value })} />
+          </label>
+          <label>
+            <span>Password</span>
+            <input type="password" value={credentials.password} onChange={(event) => setCredentials({ ...credentials, password: event.target.value })} />
+          </label>
+          <button className="primary-button">Enter HR OS</button>
+          <div className="demo-logins">
+            {demoUsers.map(([role, email, password]) => (
+              <button
+                type="button"
+                key={role}
+                onClick={() => setCredentials({ email, password })}
+              >
+                {role}
+              </button>
+            ))}
+          </div>
+          <span className="login-status">{message}</span>
+        </form>
+      </section>
+    </main>
+  );
+}
+
+function EmployeeModal({ draft, setDraft, createEmployee, close }) {
+  function update(field, value) {
+    setDraft((current) => ({ ...current, [field]: value }));
+  }
+
+  return (
+    <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Create employee">
+      <form className="employee-modal" onSubmit={createEmployee}>
+        <SectionHeader title="Create Employee Record" action="HR/Admin" />
+        <div className="form-grid">
+          <label>
+            <span>Name</span>
+            <input required value={draft.name} onChange={(event) => update('name', event.target.value)} />
+          </label>
+          <label>
+            <span>Role</span>
+            <input required value={draft.role} onChange={(event) => update('role', event.target.value)} />
+          </label>
+          <label>
+            <span>Team</span>
+            <input value={draft.team} onChange={(event) => update('team', event.target.value)} />
+          </label>
+          <label>
+            <span>Site</span>
+            <input value={draft.site} onChange={(event) => update('site', event.target.value)} />
+          </label>
+          <label>
+            <span>Manager</span>
+            <input value={draft.manager} onChange={(event) => update('manager', event.target.value)} />
+          </label>
+          <label>
+            <span>Salary</span>
+            <input value={draft.salary} onChange={(event) => update('salary', event.target.value)} />
+          </label>
+        </div>
+        <div className="modal-actions">
+          <button type="button" className="ghost-button" onClick={close}>Cancel</button>
+          <button className="primary-button">Create record</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function AuditView({ auditLogs }) {
+  return (
+    <div className="stack">
+      <section className="hero-panel module-hero">
+        <div>
+          <h2>Audit-ready HR operations</h2>
+          <p>Every sensitive HR workflow records actor, role, action, entity, and timestamp so the project behaves like a real governed HR platform.</p>
+        </div>
+        <div className="hero-metrics">
+          <Metric label="Events" value={String(auditLogs.length)} trend="Latest 100 retained" />
+          <Metric label="Protected writes" value="6" trend="Role checked" />
+          <Metric label="Access model" value="RBAC" trend="Demo sessions" />
+        </div>
+      </section>
+      <section className="wide-panel">
+        <SectionHeader title="Activity History" action="Admin and HR only" />
+        <div className="audit-list">
+          {auditLogs.map((entry) => (
+            <article className="audit-row" key={entry.id}>
+              <div>
+                <strong>{entry.action}</strong>
+                <span>{entry.detail}</span>
+              </div>
+              <div>
+                <strong>{entry.actor.name}</strong>
+                <span>{entry.actor.role} | {entry.entity} | {new Date(entry.at).toLocaleString()}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
   );
 }
 

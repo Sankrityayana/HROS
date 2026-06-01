@@ -28,6 +28,20 @@
     { "label": "Offer", "count": 5, "delta": "2 approvals" },
     { "label": "Joining", "count": 3, "delta": "Jun cohort" }
   ],
+  "jobs": [
+    { "id": "JOB-2401", "title": "Senior Product Manager", "department": "Product", "location": "Bengaluru Hybrid", "status": "Live", "priority": "Critical", "owner": "Mira Shah" },
+    { "id": "JOB-2402", "title": "Payroll Specialist", "department": "Finance", "location": "Mumbai", "status": "Live", "priority": "High", "owner": "Diya Nair" },
+    { "id": "JOB-2403", "title": "Security Engineer", "department": "Technology", "location": "Pune", "status": "Interview", "priority": "Critical", "owner": "Neel Verma" }
+  ],
+  "users": [
+    { "id": "USR-001", "name": "Mira Shah", "email": "admin@northstar.example", "password": "admin123", "role": "Admin", "team": "Executive HR" },
+    { "id": "USR-002", "name": "Diya Nair", "email": "hr@northstar.example", "password": "hr123", "role": "HR", "team": "People" },
+    { "id": "USR-003", "name": "Sameer Rao", "email": "manager@northstar.example", "password": "manager123", "role": "Manager", "team": "Operations" },
+    { "id": "USR-004", "name": "Kabir Sethi", "email": "employee@northstar.example", "password": "employee123", "role": "Employee", "team": "Finance" }
+  ],
+  "auditLogs": [
+    { "id": "AUD-SEED-001", "at": "2026-06-01T08:30:00.000Z", "actor": { "id": "system", "name": "System", "role": "System" }, "action": "Initialized product demo", "entity": "Platform", "detail": "Auth, role access, employee actions, hiring jobs, and audit history enabled." }
+  ],
   "metrics": {
     "headcount": 486,
     "openRoles": 47,

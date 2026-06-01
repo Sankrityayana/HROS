@@ -233,6 +233,35 @@ h1 {
   white-space: nowrap;
 }
 
+.user-pill {
+  display: grid;
+  min-width: 126px;
+  min-height: 38px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.user-pill span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.notice-bar {
+  margin: -8px 0 16px;
+  padding: 11px 14px;
+  border: 1px solid rgba(36, 93, 156, 0.18);
+  border-radius: 8px;
+  background: var(--info-bg);
+  color: var(--accent-2);
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .primary-button,
 .ghost-button,
 .text-button,
@@ -877,6 +906,154 @@ td span {
   font-weight: 900;
 }
 
+.login-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(16, 24, 20, 0.96), rgba(12, 111, 89, 0.9)),
+    var(--bg);
+}
+
+.login-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.75fr);
+  width: min(1040px, 100%);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.24);
+}
+
+.login-copy {
+  display: grid;
+  align-content: end;
+  gap: 18px;
+  min-height: 560px;
+  padding: 42px;
+  color: #ffffff;
+  background:
+    linear-gradient(135deg, rgba(16, 24, 20, 0.97), rgba(12, 111, 89, 0.88)),
+    radial-gradient(circle at 82% 16%, rgba(217, 159, 61, 0.36), transparent 34%);
+}
+
+.login-copy h1 {
+  max-width: 560px;
+  font-size: clamp(44px, 7vw, 76px);
+  line-height: 0.95;
+}
+
+.login-copy p {
+  max-width: 560px;
+  color: #dce9e3;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.login-form {
+  display: grid;
+  align-content: center;
+  gap: 16px;
+  padding: 42px;
+}
+
+.login-form h2 {
+  font-size: 28px;
+}
+
+.login-form label,
+.employee-modal label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.demo-logins {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.demo-logins button {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.login-status {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(16, 24, 20, 0.46);
+  backdrop-filter: blur(8px);
+}
+
+.employee-modal {
+  width: min(760px, 100%);
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: var(--shadow-md);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.audit-list {
+  display: grid;
+  gap: 10px;
+}
+
+.audit-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.45fr);
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.audit-row strong,
+.audit-row span {
+  display: block;
+}
+
+.audit-row span {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 @media (max-width: 1120px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -894,7 +1071,9 @@ td span {
 
   .hero-panel,
   .toolbar-band,
-  .two-column {
+  .two-column,
+  .login-panel,
+  .audit-row {
     grid-template-columns: 1fr;
   }
 
@@ -932,8 +1111,18 @@ td span {
   }
 
   .topbar-actions button,
-  .context-pill {
+  .context-pill,
+  .user-pill {
     width: 100%;
+  }
+
+  .login-copy {
+    min-height: auto;
+    padding: 28px;
+  }
+
+  .login-form {
+    padding: 24px;
   }
 
   .hero-panel {
@@ -959,7 +1148,9 @@ td span {
 
   .ranking-card,
   .rank-title,
-  .ranking-actions {
+  .ranking-actions,
+  .form-grid,
+  .demo-logins {
     display: grid;
     grid-template-columns: 1fr;
   }

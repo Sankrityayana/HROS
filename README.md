@@ -11,7 +11,7 @@ Proof of Concept for an AI-powered recruiter system that ranks candidates beyond
 
 ## HR OS Project Scope
 
-This project is framed as an HR OS project, not a production replacement for an HR department. It demonstrates how one web system can centralize and partially automate repetitive HR workflows.
+This project is framed as an HR OS project with product-style controls, not a commercial production replacement for an HR department. It demonstrates how one web system can centralize and partially automate repetitive HR workflows.
 
 Covered modules:
 
@@ -29,15 +29,25 @@ Covered modules:
 Project positioning:
 
 - This is a complete academic/demo project for an AI-powered HR OS concept.
-- It is not marketed as a production HRMS.
+- It is productized for review with demo login, role-based access, protected write actions, employee creation, job creation APIs, and audit history.
+- It is not marketed as a production HRMS or enterprise SaaS.
 - It shows how AI and workflow automation can reduce repetitive HR workload and support HR decision-making.
+
+Product-style controls included:
+
+- Demo authentication with Admin, HR, Manager, and Employee roles.
+- Role-based access control for sensitive actions.
+- Employee record creation and update APIs.
+- Recruiting job creation API plus hiring pipeline updates.
+- Audit trail for sign-ins, leave decisions, candidate sourcing, employee changes, and job creation.
+- Protected AI and ranking APIs so the HR workspace behaves like an internal operating system.
 
 ## Architecture
 
 ```text
 React + Vite UI
   |
-  | /api/hr, /api/ai/ask, /api/talent/rank
+  | /api/auth/login, /api/hr, /api/ai/ask, /api/talent/rank, /api/audit
   v
 Express API
   |
@@ -113,6 +123,15 @@ Frontend:
 ```text
 http://127.0.0.1:5173/
 ```
+
+Demo credentials:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | `admin@northstar.example` | `admin123` |
+| HR | `hr@northstar.example` | `hr123` |
+| Manager | `manager@northstar.example` | `manager123` |
+| Employee | `employee@northstar.example` | `employee123` |
 
 Backend:
 
