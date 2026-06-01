@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: northstar-hr-os
+    env: node
+    plan: free
+    buildCommand: npm ci --no-audit --no-fund && npm test && npm run rank && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4173
+      - key: OPENAI_MODEL
+        value: gpt-4.1-mini

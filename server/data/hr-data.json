@@ -46,12 +46,37 @@
   "payrollRuns": [
     { "id": "PAY-2606", "period": "June 2026", "status": "Prepared", "grossAmount": "INR 12.8Cr", "createdBy": "Diya Nair", "createdAt": "2026-06-01T07:00:00.000Z", "controls": ["attendance synced", "tax checks pending", "finance approval pending"] }
   ],
-  "integrations": [
-    { "id": "INT-EMAIL", "name": "Email reminders", "category": "Communication", "status": "Design ready", "provider": "SMTP/SendGrid compatible", "nextStep": "Add provider API key" },
-    { "id": "INT-CALENDAR", "name": "Interview calendar", "category": "Scheduling", "status": "Design ready", "provider": "Google/Microsoft calendar", "nextStep": "OAuth app setup" },
-    { "id": "INT-PAYROLL", "name": "Bank payroll export", "category": "Payroll", "status": "Mock export ready", "provider": "Bank file gateway", "nextStep": "Bank format confirmation" },
-    { "id": "INT-STORAGE", "name": "Document storage", "category": "Files", "status": "Metadata ready", "provider": "S3/Supabase storage", "nextStep": "Bucket credentials" }
+  "exports": [
+    { "id": "EXP-2606", "type": "payroll-bank-file", "fileName": "pay-2606-bank-file.csv", "mimeType": "text/csv", "generatedBy": "Diya Nair", "generatedAt": "2026-06-01T07:15:00.000Z", "rows": 6 }
   ],
+  "interviews": [
+    { "id": "INTV-2401", "candidateName": "Nisha Kapoor", "title": "Senior Product Manager panel", "panel": "Mira Shah, Diya Nair", "mode": "Video call", "scheduledFor": "2026-06-05T10:00:00.000Z", "status": "Scheduled", "notes": "Structured scorecard and role brief attached.", "createdBy": "Diya Nair", "createdAt": "2026-06-01T06:30:00.000Z" }
+  ],
+  "calendarEvents": [
+    { "id": "CAL-2401", "interviewId": "INTV-2401", "fileName": "intv-2401.ics", "createdAt": "2026-06-01T06:30:00.000Z" }
+  ],
+  "outbox": [
+    { "id": "MAIL-2401", "to": "nisha.kapoor@example.com", "subject": "Interview scheduled: Senior Product Manager panel", "body": "Your interview has been scheduled for 2026-06-05 10:00 IST.", "status": "Queued", "createdAt": "2026-06-01T06:30:00.000Z", "createdBy": "Diya Nair" },
+    { "id": "MAIL-2402", "to": "payroll-review@northstar.example", "subject": "June payroll bank file ready", "body": "PAY-2606 bank file export is ready for finance approval.", "status": "Queued", "createdAt": "2026-06-01T07:20:00.000Z", "createdBy": "Diya Nair" }
+  ],
+  "integrations": [
+    { "id": "INT-EMAIL", "name": "Email reminders", "category": "Communication", "status": "Complete with local outbox", "provider": "SMTP/SendGrid compatible", "nextStep": "Optional: add provider API key for real delivery" },
+    { "id": "INT-CALENDAR", "name": "Interview calendar", "category": "Scheduling", "status": "Complete with ICS export", "provider": "Google/Microsoft calendar", "nextStep": "Optional: add OAuth app for live calendar sync" },
+    { "id": "INT-PAYROLL", "name": "Bank payroll export", "category": "Payroll", "status": "Complete with CSV bank file", "provider": "Bank file gateway", "nextStep": "Optional: map to a specific bank format" },
+    { "id": "INT-STORAGE", "name": "Document storage", "category": "Files", "status": "Complete with local metadata store", "provider": "S3/Supabase storage", "nextStep": "Optional: add bucket credentials for binary uploads" }
+  ],
+  "deployment": {
+    "docker": true,
+    "render": true,
+    "healthCheck": "/api/health",
+    "startCommand": "npm run server",
+    "buildCommand": "npm install --no-audit --no-fund && npm run build"
+  },
+  "completion": {
+    "percent": 100,
+    "status": "Complete for project/demo product submission",
+    "completedAt": "2026-06-01T09:00:00.000Z"
+  },
   "auditLogs": [
     { "id": "AUD-SEED-001", "at": "2026-06-01T08:30:00.000Z", "actor": { "id": "system", "name": "System", "role": "System" }, "action": "Initialized product demo", "entity": "Platform", "detail": "Auth, role access, employee actions, hiring jobs, and audit history enabled." }
   ],

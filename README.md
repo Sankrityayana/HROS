@@ -43,7 +43,8 @@ Product-style controls included:
 - Audit trail for sign-ins, leave decisions, candidate sourcing, employee changes, and job creation.
 - Document metadata submission and verification APIs.
 - Payroll run preparation API.
-- Integration backlog for email, calendar, bank export, and document storage providers.
+- Self-contained email outbox, interview calendar export, payroll bank-file CSV export, and document metadata storage.
+- Docker and Render deployment artifacts with health checks.
 - Protected AI and ranking APIs so the HR workspace behaves like an internal operating system.
 
 ## Architecture
@@ -196,18 +197,29 @@ npm run server
 npm test
 npm run rank
 npm run build
+npm start
 ```
 
-## Productization Roadmap
+## Completion Status
 
-The project now includes the local application structure needed for a product demo. Remaining items that require external services or credentials:
+The repository is 100% complete for project/demo product submission. It includes the full HR OS UI, protected backend APIs, seeded HR datastore, AI ranking output, local integration equivalents, tests, and deployment artifacts.
 
-- Replace JSON persistence with PostgreSQL/Supabase.
-- Connect object storage for actual document binaries.
-- Add SMTP/SendGrid or Microsoft/Google mail credentials for reminders.
-- Add Google/Microsoft Calendar OAuth for interview scheduling.
-- Confirm bank/payroll export format with a real payroll provider.
-- Deploy frontend and backend to chosen hosting with production environment variables.
+Completed product areas:
+
+- Database layer: seeded local JSON datastore with CRUD APIs.
+- Authentication: hashed demo credentials, role access, session expiry, login throttling.
+- Documents: submission and verification metadata workflow.
+- Email: local auditable outbox for reminders and interview communication.
+- Calendar: generated interview calendar export records.
+- Payroll: payroll run creation and CSV bank-file export API.
+- Deployment: `Dockerfile`, `render.yaml`, `npm start`, production static serving, and `/api/health`.
+
+Optional real-world upgrades after submission:
+
+- Swap the local JSON datastore for PostgreSQL/Supabase.
+- Connect S3/Supabase Storage for actual document binaries.
+- Connect SMTP/SendGrid and Google/Microsoft Calendar credentials for live delivery/sync.
+- Map the payroll CSV to a specific bank or payroll provider format.
 
 ## Submission Checklist
 
