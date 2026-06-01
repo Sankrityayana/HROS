@@ -18,6 +18,29 @@ const navItems = [
   'Assets',
 ];
 
+const navGroups = [
+  { label: 'Control', items: ['Command Center', 'Talent AI'] },
+  { label: 'People Ops', items: ['Recruiting', 'Onboarding', 'Employees', 'Attendance', 'Payroll'] },
+  { label: 'Culture', items: ['Performance', 'Relations', 'Learning'] },
+  { label: 'Governance', items: ['Compliance', 'Analytics', 'Assets'] },
+];
+
+const pageMeta = {
+  'Command Center': 'Executive overview of HR operations, AI insights, approvals, payroll readiness, and hiring flow.',
+  'Talent AI': 'Predictive ranking workspace for intelligent candidate shortlisting.',
+  Recruiting: 'End-to-end hiring operations from job intake to candidate hire.',
+  Onboarding: 'Document collection, verification, employee records, tasks, and orientation.',
+  Employees: 'Employee database, profile updates, records, transfers, and promotions.',
+  Attendance: 'Attendance health, leave approvals, absenteeism signals, and exceptions.',
+  Payroll: 'Salary readiness, reimbursements, tax documents, benefits, and payroll controls.',
+  Performance: 'Goals, reviews, feedback, performance tracking, and high-potential bench.',
+  Relations: 'Grievances, conflict resolution, engagement, and wellbeing support.',
+  Compliance: 'Policies, labor compliance, contracts, and audit readiness.',
+  Learning: 'Skill gaps, training assignments, certifications, and career plans.',
+  Analytics: 'Hiring metrics, attrition analysis, workforce planning, and HR reports.',
+  Assets: 'Assigned assets, access tokens, warranty risks, and exit recovery.',
+};
+
 const iconPaths = {
   'Command Center': 'M4 13h6V4H4v9Zm10 7h6V4h-6v16ZM4 20h6v-5H4v5Z',
   'Talent AI': 'M12 3 14.6 8.6 21 9.3 16.2 13.7 17.6 20 12 16.8 6.4 20 7.8 13.7 3 9.3 9.4 8.6 12 3Z',
@@ -256,15 +279,20 @@ function App() {
           </div>
         </div>
         <nav>
-          {navItems.map((item) => (
-            <button
-              key={item}
-              className={active === item ? 'nav-item active' : 'nav-item'}
-              onClick={() => setActive(item)}
-            >
-              <Icon name={item} />
-              <span>{item}</span>
-            </button>
+          {navGroups.map((group) => (
+            <section className="nav-group" key={group.label}>
+              <span className="nav-label">{group.label}</span>
+              {group.items.map((item) => (
+                <button
+                  key={item}
+                  className={active === item ? 'nav-item active' : 'nav-item'}
+                  onClick={() => setActive(item)}
+                >
+                  <Icon name={item} />
+                  <span>{item}</span>
+                </button>
+              ))}
+            </section>
           ))}
         </nav>
         <div className="sidebar-footer">
@@ -278,9 +306,10 @@ function App() {
         <header className="topbar">
           <div>
             <h1>{active}</h1>
-            <p>{company.legalName} | {company.headquarters} | {company.fiscalYear}</p>
+            <p>{pageMeta[active]}</p>
           </div>
           <div className="topbar-actions">
+            <div className="context-pill">{company.headquarters} | {company.fiscalYear}</div>
             <button className="ghost-button" onClick={loadHrData}>Refresh</button>
             <button className="primary-button">Add employee</button>
           </div>
