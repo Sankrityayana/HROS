@@ -25,5 +25,7 @@
   "overrides": {
     "rollup": "4.40.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "rollup": "4.40.2"
+  }
 }
