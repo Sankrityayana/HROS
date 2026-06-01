@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID, timingSafeEqual } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -16,8 +16,22 @@ const candidatesPath = path.join(challengeDir, 'candidates.json');
 const app = express();
 const port = Number(process.env.PORT || 4173);
 const sessions = new Map();
+const loginAttempts = new Map();
+const SESSION_TTL_MS = 1000 * 60 * 60 * 8;
+const LOGIN_WINDOW_MS = 1000 * 60 * 10;
+const LOGIN_LIMIT = 8;
 
 app.use(express.json({ limit: '1mb' }));
+app.use((request, response, next) => {
+  response.setHeader('X-Content-Type-Options', 'nosniff');
+  response.setHeader('X-Frame-Options', 'DENY');
+  response.setHeader('Referrer-Policy', 'no-referrer');
+  response.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    response.setHeader('Cache-Control', 'no-store');
+  }
+  next();
+});
 
 async function readData() {
   return JSON.parse(await readFile(dataPath, 'utf8'));
@@ -37,6 +51,30 @@ function publicUser(user) {
   };
 }
 
+function passwordHash(email, password) {
+  return createHash('sha256').update(`${email.toLowerCase()}:${password}`).digest('hex');
+}
+
+function verifyPassword(user, password) {
+  const expected = Buffer.from(user.passwordHash || '', 'hex');
+  const actual = Buffer.from(passwordHash(user.email, password), 'hex');
+  return expected.length === actual.length && timingSafeEqual(expected, actual);
+}
+
+function rateLimitLogin(email) {
+  const now = Date.now();
+  const record = loginAttempts.get(email) || { count: 0, resetAt: now + LOGIN_WINDOW_MS };
+
+  if (record.resetAt < now) {
+    record.count = 0;
+    record.resetAt = now + LOGIN_WINDOW_MS;
+  }
+
+  record.count += 1;
+  loginAttempts.set(email, record);
+  return record.count <= LOGIN_LIMIT;
+}
+
 function appendAudit(data, actor, action, entity, detail) {
   data.auditLogs = data.auditLogs || [];
   data.auditLogs.unshift({
@@ -52,14 +90,17 @@ function appendAudit(data, actor, action, entity, detail) {
 
 function authRequired(request, response, next) {
   const token = request.get('authorization')?.replace(/^Bearer\s+/i, '');
-  const user = token ? sessions.get(token) : null;
+  const session = token ? sessions.get(token) : null;
 
-  if (!user) {
+  if (!session || session.expiresAt < Date.now()) {
+    if (token) {
+      sessions.delete(token);
+    }
     response.status(401).json({ error: 'Sign in required.' });
     return;
   }
 
-  request.user = user;
+  request.user = session.user;
   next();
 }
 
@@ -164,18 +205,23 @@ app.post('/api/auth/login', async (request, response, next) => {
     const email = String(request.body.email || '').trim().toLowerCase();
     const password = String(request.body.password || '');
     const data = await readData();
-    const user = data.users.find((item) => item.email.toLowerCase() === email && item.password === password);
+    const user = data.users.find((item) => item.email.toLowerCase() === email);
 
-    if (!user) {
+    if (!rateLimitLogin(email)) {
+      response.status(429).json({ error: 'Too many login attempts. Try again later.' });
+      return;
+    }
+
+    if (!user || !verifyPassword(user, password)) {
       response.status(401).json({ error: 'Invalid demo credentials.' });
       return;
     }
 
     const token = randomUUID();
-    sessions.set(token, publicUser(user));
+    sessions.set(token, { user: publicUser(user), expiresAt: Date.now() + SESSION_TTL_MS });
     appendAudit(data, user, 'Signed in', 'Session', `${user.name} opened HR OS as ${user.role}.`);
     await writeData(data);
-    response.json({ token, user: publicUser(user) });
+    response.json({ token, user: publicUser(user), expiresInSeconds: SESSION_TTL_MS / 1000 });
   } catch (error) {
     next(error);
   }
@@ -190,6 +236,28 @@ app.get('/api/hr', authRequired, async (_request, response, next) => {
     const data = await readData();
     const { users: _users, ...safeData } = data;
     response.json({ ...safeData, insights: buildInsights(data) });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/api/admin/security', authRequired, requireRole('Admin', 'HR'), async (_request, response, next) => {
+  try {
+    const data = await readData();
+    response.json({
+      activeSessions: sessions.size,
+      auditEvents: (data.auditLogs || []).length,
+      passwordStorage: 'sha256 demo hash',
+      sessionTtlHours: SESSION_TTL_MS / 1000 / 60 / 60,
+      protectedRoutes: [
+        '/api/hr',
+        '/api/employees',
+        '/api/jobs',
+        '/api/documents',
+        '/api/payroll/runs',
+        '/api/audit',
+      ],
+    });
   } catch (error) {
     next(error);
   }
@@ -319,6 +387,116 @@ app.post('/api/jobs', authRequired, requireRole('Admin', 'HR'), async (request, 
     appendAudit(data, request.user, 'Created job', 'Recruiting', `${job.title} requisition opened for ${job.department}.`);
     await writeData(data);
     response.status(201).json({ job, jobs: data.jobs, metrics: data.metrics });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/api/jobs', authRequired, async (_request, response, next) => {
+  try {
+    const data = await readData();
+    response.json({ jobs: data.jobs || [] });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.patch('/api/jobs/:id', authRequired, requireRole('Admin', 'HR'), async (request, response, next) => {
+  try {
+    const data = await readData();
+    const job = (data.jobs || []).find((item) => item.id === request.params.id);
+    if (!job) {
+      response.status(404).json({ error: 'Job not found.' });
+      return;
+    }
+
+    ['title', 'department', 'location', 'status', 'priority'].forEach((field) => {
+      if (request.body[field] !== undefined) {
+        job[field] = String(request.body[field]).trim();
+      }
+    });
+    appendAudit(data, request.user, 'Updated job', 'Recruiting', `${job.title} requisition changed to ${job.status}.`);
+    await writeData(data);
+    response.json({ job, jobs: data.jobs, metrics: data.metrics });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/api/documents', authRequired, requireRole('Admin', 'HR', 'Employee'), async (request, response, next) => {
+  try {
+    const data = await readData();
+    const document = {
+      id: `DOC-${Date.now().toString().slice(-6)}`,
+      employeeId: String(request.body.employeeId || '').trim(),
+      name: String(request.body.name || '').trim(),
+      type: String(request.body.type || 'Employee document').trim(),
+      status: 'Submitted',
+      uploadedBy: request.user.name,
+      uploadedAt: new Date().toISOString(),
+    };
+
+    if (!document.employeeId || !document.name) {
+      response.status(400).json({ error: 'employeeId and document name are required.' });
+      return;
+    }
+
+    data.documents = data.documents || [];
+    data.documents.unshift(document);
+    appendAudit(data, request.user, 'Submitted document', 'Document', `${document.name} submitted for ${document.employeeId}.`);
+    await writeData(data);
+    response.status(201).json({ document, documents: data.documents });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.patch('/api/documents/:id/verify', authRequired, requireRole('Admin', 'HR'), async (request, response, next) => {
+  try {
+    const data = await readData();
+    const document = (data.documents || []).find((item) => item.id === request.params.id);
+    if (!document) {
+      response.status(404).json({ error: 'Document not found.' });
+      return;
+    }
+
+    document.status = String(request.body.status || 'Verified');
+    document.verifiedBy = request.user.name;
+    document.verifiedAt = new Date().toISOString();
+    appendAudit(data, request.user, `${document.status} document`, 'Document', `${document.name} for ${document.employeeId}.`);
+    await writeData(data);
+    response.json({ document, documents: data.documents });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/api/payroll/runs', authRequired, requireRole('Admin', 'HR', 'Finance'), async (request, response, next) => {
+  try {
+    const data = await readData();
+    const run = {
+      id: `PAY-${Date.now().toString().slice(-6)}`,
+      period: String(request.body.period || data.company.payCycle || 'Current period').trim(),
+      status: 'Prepared',
+      grossAmount: String(request.body.grossAmount || 'INR 12.8Cr').trim(),
+      createdBy: request.user.name,
+      createdAt: new Date().toISOString(),
+      controls: ['attendance synced', 'tax checks pending', 'finance approval pending'],
+    };
+    data.payrollRuns = data.payrollRuns || [];
+    data.payrollRuns.unshift(run);
+    appendAudit(data, request.user, 'Prepared payroll run', 'Payroll', `${run.period} payroll package created.`);
+    await writeData(data);
+    response.status(201).json({ run, payrollRuns: data.payrollRuns });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/api/integrations', authRequired, requireRole('Admin', 'HR'), async (_request, response, next) => {
+  try {
+    const data = await readData();
+    response.json({ integrations: data.integrations || [] });
   } catch (error) {
     next(error);
   }

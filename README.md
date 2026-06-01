@@ -36,10 +36,14 @@ Project positioning:
 Product-style controls included:
 
 - Demo authentication with Admin, HR, Manager, and Employee roles.
+- Hashed demo credentials, session expiry, login rate limiting, and security headers.
 - Role-based access control for sensitive actions.
 - Employee record creation and update APIs.
 - Recruiting job creation API plus hiring pipeline updates.
 - Audit trail for sign-ins, leave decisions, candidate sourcing, employee changes, and job creation.
+- Document metadata submission and verification APIs.
+- Payroll run preparation API.
+- Integration backlog for email, calendar, bank export, and document storage providers.
 - Protected AI and ranking APIs so the HR workspace behaves like an internal operating system.
 
 ## Architecture
@@ -189,13 +193,25 @@ npm run dev
 npm run dev
 npm run client
 npm run server
+npm test
 npm run rank
 npm run build
 ```
+
+## Productization Roadmap
+
+The project now includes the local application structure needed for a product demo. Remaining items that require external services or credentials:
+
+- Replace JSON persistence with PostgreSQL/Supabase.
+- Connect object storage for actual document binaries.
+- Add SMTP/SendGrid or Microsoft/Google mail credentials for reminders.
+- Add Google/Microsoft Calendar OAuth for interview scheduling.
+- Confirm bank/payroll export format with a real payroll provider.
+- Deploy frontend and backend to chosen hosting with production environment variables.
 
 ## Submission Checklist
 
 - Code: full-stack implementation in this repository.
 - Blueprint: this README documents the HR OS scope, AI methodology, architecture, and technical choices.
 - Results: ranked shortlist files are included in `outputs/`.
-- Verification: `npm run build` and `npm run rank` pass.
+- Verification: `npm test`, `npm run build`, and `npm run rank` pass.

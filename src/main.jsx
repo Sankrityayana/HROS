@@ -17,13 +17,14 @@ const navItems = [
   'Analytics',
   'Assets',
   'Audit',
+  'Admin',
 ];
 
 const navGroups = [
   { label: 'Control', items: ['Command Center', 'Talent AI'] },
   { label: 'People Ops', items: ['Recruiting', 'Onboarding', 'Employees', 'Attendance', 'Payroll'] },
   { label: 'Culture', items: ['Performance', 'Relations', 'Learning'] },
-  { label: 'Governance', items: ['Compliance', 'Analytics', 'Assets', 'Audit'] },
+  { label: 'Governance', items: ['Compliance', 'Analytics', 'Assets', 'Audit', 'Admin'] },
 ];
 
 const pageMeta = {
@@ -41,6 +42,7 @@ const pageMeta = {
   Analytics: 'Hiring metrics, attrition analysis, workforce planning, and HR reports.',
   Assets: 'Assigned assets, access tokens, warranty risks, and exit recovery.',
   Audit: 'Role-based activity history for approvals, hiring, employee updates, and admin actions.',
+  Admin: 'Product readiness controls for security, integrations, payroll runs, and document operations.',
 };
 
 const iconPaths = {
@@ -58,6 +60,7 @@ const iconPaths = {
   Analytics: 'M4 19V5h2v14H4Zm5 0v-8h2v8H9Zm5 0V8h2v11h-2Zm5 0V3h2v16h-2Z',
   Assets: 'M4 7 12 3l8 4v10l-8 4-8-4V7Zm8 2 4-2-4-2-4 2 4 2Zm-6 .5v6l5 2.5v-6L6 9.5Zm12 0-5 2.5v6l5-2.5v-6Z',
   Audit: 'M5 3h14v18H5V3Zm3 4h8v2H8V7Zm0 4h8v2H8v-2Zm0 4h5v2H8v-2Zm8 1 2 2 4-5-1.5-1.2-2.6 3.2-1.1-1.1L16 16Z',
+  Admin: 'M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Zm0 5a3 3 0 0 1 3 3c0 1-.5 1.9-1.3 2.4L15 17H9l1.3-4.6A3 3 0 0 1 12 7Z',
 };
 
 const hiringWorkflow = [
@@ -147,6 +150,9 @@ const defaultData = {
   hiringStages: [],
   jobs: [],
   auditLogs: [],
+  documents: [],
+  payrollRuns: [],
+  integrations: [],
   insights: [],
   metrics: {
     headcount: 0,
@@ -209,7 +215,7 @@ function App() {
   const [employeeDraft, setEmployeeDraft] = useState(null);
   const [actionStatus, setActionStatus] = useState('');
 
-  const { company, employees, requests, hiringStages, metrics, insights, auditLogs } = data;
+  const { company, employees, requests, hiringStages, metrics, insights, auditLogs, jobs, documents, payrollRuns, integrations } = data;
 
   useEffect(() => {
     if (session) {
@@ -435,7 +441,7 @@ function App() {
             filteredEmployees={filteredEmployees}
           />
         )}
-        {active === 'Recruiting' && <RecruitingView hiringStages={hiringStages} addCandidate={addCandidate} />}
+        {active === 'Recruiting' && <RecruitingView hiringStages={hiringStages} jobs={jobs} addCandidate={addCandidate} />}
         {active === 'Onboarding' && <LifecycleView title="Onboarding" intro="Move accepted candidates into productive employees with document, verification, HRIS, task, and orientation controls." items={onboardingTasks} />}
         {active === 'Attendance' && <AttendanceView requests={requests} approveRequest={approveRequest} />}
         {active === 'Payroll' && <PayrollView company={company} selectedPeriod={selectedPeriod} setSelectedPeriod={setSelectedPeriod} />}
@@ -446,6 +452,15 @@ function App() {
         {active === 'Analytics' && <LifecycleView title="Analytics & Reporting" intro="Monitor hiring metrics, attrition analysis, workforce planning, and executive HR reports." items={analyticsReports} />}
         {active === 'Assets' && <AssetsView />}
         {active === 'Audit' && <AuditView auditLogs={auditLogs} />}
+        {active === 'Admin' && (
+          <AdminView
+            session={session}
+            documents={documents}
+            payrollRuns={payrollRuns}
+            integrations={integrations}
+            auditLogs={auditLogs}
+          />
+        )}
       </section>
     </main>
   );
@@ -578,6 +593,71 @@ function AuditView({ auditLogs }) {
                 <strong>{entry.actor.name}</strong>
                 <span>{entry.actor.role} | {entry.entity} | {new Date(entry.at).toLocaleString()}</span>
               </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function AdminView({ session, documents, payrollRuns, integrations, auditLogs }) {
+  const readiness = [
+    { title: 'Secure auth', status: 'Hardened', detail: 'Demo passwords are stored as hashes, sessions expire after 8 hours, and login attempts are rate limited.' },
+    { title: 'Database migration', status: 'Pending external DB', detail: 'JSON persistence remains for the project. API boundaries are ready for PostgreSQL or Supabase.' },
+    { title: 'File storage', status: 'Metadata ready', detail: 'Document upload/verification workflow exists. Real object storage needs S3 or Supabase credentials.' },
+    { title: 'Email/calendar', status: 'Integration ready', detail: 'Reminder and scheduling providers are modeled. OAuth/API keys are the remaining setup step.' },
+  ];
+
+  return (
+    <div className="stack">
+      <section className="hero-panel module-hero">
+        <div>
+          <h2>Product operations console</h2>
+          <p>Admin view for the pieces that move this from project demo toward real deployment: security posture, integration readiness, payroll runs, and document controls.</p>
+        </div>
+        <div className="hero-metrics">
+          <Metric label="Signed in role" value={session.role} trend={session.name} />
+          <Metric label="Integrations" value={String(integrations.length)} trend="Ready to wire" />
+          <Metric label="Audit events" value={String(auditLogs.length)} trend="Tracked" />
+        </div>
+      </section>
+
+      <section className="wide-panel">
+        <SectionHeader title="Product Readiness" action="What is done vs external setup" />
+        <WorkflowGrid items={readiness.map((item) => ({ ...item, owner: 'Product Ops' }))} compact />
+      </section>
+
+      <section className="two-column">
+        <div className="panel">
+          <SectionHeader title="Documents" action={`${documents.length} records`} />
+          {documents.map((document) => (
+            <div className="row" key={document.id}>
+              <span>{document.name}<small>{document.employeeId} | {document.type}</small></span>
+              <strong>{document.status}</strong>
+            </div>
+          ))}
+        </div>
+        <div className="panel">
+          <SectionHeader title="Payroll Runs" action={`${payrollRuns.length} package`} />
+          {payrollRuns.map((run) => (
+            <div className="row" key={run.id}>
+              <span>{run.period}<small>{run.grossAmount} | {run.createdBy}</small></span>
+              <strong>{run.status}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="wide-panel">
+        <SectionHeader title="Integration Backlog" action="Credential gated" />
+        <div className="integration-grid">
+          {integrations.map((integration) => (
+            <article key={integration.id}>
+              <strong>{integration.name}</strong>
+              <span>{integration.category} | {integration.provider}</span>
+              <p>{integration.nextStep}</p>
+              <em>{integration.status}</em>
             </article>
           ))}
         </div>
@@ -775,7 +855,7 @@ function EmployeesView({ teams, teamFilter, setTeamFilter, search, setSearch, fi
   );
 }
 
-function RecruitingView({ hiringStages, addCandidate }) {
+function RecruitingView({ hiringStages, jobs, addCandidate }) {
   return (
     <div className="stack">
       <section className="hero-panel recruiting-hero">
@@ -797,10 +877,10 @@ function RecruitingView({ hiringStages, addCandidate }) {
       <section className="two-column">
         <div className="panel">
           <SectionHeader title="Priority Requisitions" action="Owners" />
-          {['Senior Product Manager', 'Payroll Specialist', 'Security Engineer', 'Regional HRBP'].map((role, index) => (
-            <div className="row" key={role}>
-              <span>{role}</span>
-              <strong>{['Mira', 'Diya', 'Neel', 'Sameer'][index]}</strong>
+          {jobs.map((job) => (
+            <div className="row" key={job.id}>
+              <span>{job.title}<small>{job.department} | {job.location}</small></span>
+              <strong>{job.priority}</strong>
             </div>
           ))}
         </div>

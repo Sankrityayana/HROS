@@ -34,10 +34,23 @@
     { "id": "JOB-2403", "title": "Security Engineer", "department": "Technology", "location": "Pune", "status": "Interview", "priority": "Critical", "owner": "Neel Verma" }
   ],
   "users": [
-    { "id": "USR-001", "name": "Mira Shah", "email": "admin@northstar.example", "password": "admin123", "role": "Admin", "team": "Executive HR" },
-    { "id": "USR-002", "name": "Diya Nair", "email": "hr@northstar.example", "password": "hr123", "role": "HR", "team": "People" },
-    { "id": "USR-003", "name": "Sameer Rao", "email": "manager@northstar.example", "password": "manager123", "role": "Manager", "team": "Operations" },
-    { "id": "USR-004", "name": "Kabir Sethi", "email": "employee@northstar.example", "password": "employee123", "role": "Employee", "team": "Finance" }
+    { "id": "USR-001", "name": "Mira Shah", "email": "admin@northstar.example", "passwordHash": "84bd36dd8ffa9750489b9ec5b240b02b5f8094c12fcd22e5c7b512fb8d349346", "role": "Admin", "team": "Executive HR" },
+    { "id": "USR-002", "name": "Diya Nair", "email": "hr@northstar.example", "passwordHash": "9165554f1276a11ffbd9c8d67c49f32ff5df570104581c4c462b5dd0b89384f8", "role": "HR", "team": "People" },
+    { "id": "USR-003", "name": "Sameer Rao", "email": "manager@northstar.example", "passwordHash": "a53b8868a205b91d3e86c291f46f9ff301a877b2e4fed2a55fa122b2791f2b7c", "role": "Manager", "team": "Operations" },
+    { "id": "USR-004", "name": "Kabir Sethi", "email": "employee@northstar.example", "passwordHash": "602bff32876e20cd872e02c595591ffa7bdf27c7cef7e8a20d1ed877f84c277a", "role": "Employee", "team": "Finance" }
+  ],
+  "documents": [
+    { "id": "DOC-1001", "employeeId": "NH-1077", "name": "Identity proof", "type": "KYC", "status": "Verified", "uploadedBy": "Rohan Iyer", "uploadedAt": "2026-05-28T06:15:00.000Z", "verifiedBy": "Diya Nair", "verifiedAt": "2026-05-29T09:00:00.000Z" },
+    { "id": "DOC-1002", "employeeId": "NH-1063", "name": "Contract renewal", "type": "Contract", "status": "Submitted", "uploadedBy": "Ishita Roy", "uploadedAt": "2026-05-31T04:30:00.000Z" }
+  ],
+  "payrollRuns": [
+    { "id": "PAY-2606", "period": "June 2026", "status": "Prepared", "grossAmount": "INR 12.8Cr", "createdBy": "Diya Nair", "createdAt": "2026-06-01T07:00:00.000Z", "controls": ["attendance synced", "tax checks pending", "finance approval pending"] }
+  ],
+  "integrations": [
+    { "id": "INT-EMAIL", "name": "Email reminders", "category": "Communication", "status": "Design ready", "provider": "SMTP/SendGrid compatible", "nextStep": "Add provider API key" },
+    { "id": "INT-CALENDAR", "name": "Interview calendar", "category": "Scheduling", "status": "Design ready", "provider": "Google/Microsoft calendar", "nextStep": "OAuth app setup" },
+    { "id": "INT-PAYROLL", "name": "Bank payroll export", "category": "Payroll", "status": "Mock export ready", "provider": "Bank file gateway", "nextStep": "Bank format confirmation" },
+    { "id": "INT-STORAGE", "name": "Document storage", "category": "Files", "status": "Metadata ready", "provider": "S3/Supabase storage", "nextStep": "Bucket credentials" }
   ],
   "auditLogs": [
     { "id": "AUD-SEED-001", "at": "2026-06-01T08:30:00.000Z", "actor": { "id": "system", "name": "System", "role": "System" }, "action": "Initialized product demo", "entity": "Platform", "detail": "Auth, role access, employee actions, hiring jobs, and audit history enabled." }

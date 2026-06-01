@@ -587,6 +587,14 @@ td span {
   font-weight: 700;
 }
 
+.row small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .request-actions button:first-child {
   border-color: rgba(12, 111, 89, 0.35);
   color: var(--accent);
@@ -1054,6 +1062,44 @@ td span {
   line-height: 1.45;
 }
 
+.integration-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.integration-grid article {
+  display: grid;
+  gap: 8px;
+  min-height: 164px;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.integration-grid strong,
+.integration-grid span,
+.integration-grid p,
+.integration-grid em {
+  display: block;
+}
+
+.integration-grid span,
+.integration-grid p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.integration-grid em {
+  align-self: end;
+  color: var(--accent);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 900;
+}
+
 @media (max-width: 1120px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -1085,7 +1131,8 @@ td span {
   .workflow-grid.compact,
   .absence-grid,
   .score-grid,
-  .method-grid {
+  .method-grid,
+  .integration-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -1142,6 +1189,7 @@ td span {
   .absence-grid,
   .score-grid,
   .method-grid,
+  .integration-grid,
   .ai-console {
     grid-template-columns: 1fr;
   }

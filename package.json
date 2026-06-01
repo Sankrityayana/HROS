@@ -8,6 +8,7 @@
     "client": "vite --host 127.0.0.1 --port 5173 --strictPort",
     "server": "node server/index.js",
     "rank": "node scripts/generate-ranked-output.js",
+    "test": "node --test tests",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1"
   },
